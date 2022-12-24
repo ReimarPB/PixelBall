@@ -10,9 +10,27 @@
 Display *display;
 Window window;
 
+void init();
 void start();
 
-sprite_t load_sprite(sprite_identifier_t sprite[])
+void set_window_title(char *title)
+{
+	XStoreName(display, window, title);
+}
+
+void set_window_icon(sprite_t icon)
+{
+	XWMHints *hints = XAllocWMHints();
+	hints->flags = IconPixmapHint | IconMaskHint;
+	hints->icon_pixmap = icon.pixmap;
+	hints->icon_mask = icon.shapemask;
+
+	XSetWMHints(display, window, hints);
+
+	XFree(hints);
+}
+
+sprite_t load_sprite(sprite_identifier_t sprite)
 {
 	int width, height;
 	sscanf(sprite[0], "%d %d ", &width, &height);
@@ -52,6 +70,8 @@ int main()
 	unsigned long black = BlackPixel(display, DefaultScreen(display));
 
 	window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, WIDTH_PX, HEIGHT_PX, 0, white, white);
+
+	init();
 
 	XSelectInput(display, window, StructureNotifyMask);
 

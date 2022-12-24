@@ -10,5 +10,5 @@ typedef struct sprite {
 	int height;
 } sprite_t;
 
-typedef char * sprite_identifier_t;
+typedef char ** sprite_identifier_t;
 

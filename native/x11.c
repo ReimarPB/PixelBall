@@ -14,16 +14,20 @@ void start();
 
 sprite_t load_sprite(sprite_identifier_t sprite[])
 {
-	unsigned long black = BlackPixel(display, DefaultScreen(display));
 	int width, height;
 	sscanf(sprite[0], "%d %d ", &width, &height);
+
 	XpmAttributes attributes;
 	attributes.valuemask = XpmReturnAllocPixels | XpmReturnExtensions;
+
 	Pixmap pixmap, shapemask;
-	XpmCreatePixmapFromData(display, window, sprite, &pixmap, &shapemask, NULL);
+	XpmCreatePixmapFromData(display, window, sprite, &pixmap, &shapemask, &attributes);
+
 	sprite_t result = {
 		.pixmap = pixmap,
-		.shapemask = shapemask
+		.shapemask = shapemask,
+		.width = width,
+		.height = height
 	};
 	return result;
 }
@@ -32,8 +36,12 @@ void draw_sprite(sprite_t sprite, int x, int y)
 {
 	XGCValues values;
 	values.clip_mask = sprite.shapemask;
-	GC gc = XCreateGC(display, window, 0, &values);
-	XCopyArea(display, sprite.pixmap, window, gc, 0, 0, 10, 10, x, y);
+
+	GC gc = XCreateGC(display, window, GCClipMask, &values);
+
+	XCopyArea(display, sprite.pixmap, window, gc, 0, 0, sprite.width, sprite.height, x, y);
+
+	XFreeGC(display, gc);
 }
 
 int main()

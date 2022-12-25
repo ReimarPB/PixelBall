@@ -3,6 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #include "x11.h"
 #include "../game.h"
@@ -11,7 +14,8 @@ Display *display;
 Window window;
 
 void init();
-void start();
+void draw();
+void update();
 
 void set_window_title(char *title)
 {
@@ -41,29 +45,58 @@ sprite_t load_sprite(sprite_identifier_t sprite)
 	Pixmap pixmap, shapemask;
 	XpmCreatePixmapFromData(display, window, sprite, &pixmap, &shapemask, &attributes);
 
+	XGCValues values;
+	values.clip_mask = shapemask;
+	GC gc = XCreateGC(display, window, GCClipMask, &values);
+
 	sprite_t result = {
 		.pixmap = pixmap,
 		.shapemask = shapemask,
+		.gc = gc,
 		.width = width,
 		.height = height
 	};
 	return result;
 }
 
+void unload_sprite(sprite_t sprite)
+{
+	XFreePixmap(display, sprite.pixmap);
+	XFreeGC(display, sprite.gc);
+}
+
 void draw_sprite(sprite_t sprite, int x, int y)
 {
-	XGCValues values;
-	values.clip_mask = sprite.shapemask;
+	XCopyArea(display, sprite.pixmap, window, sprite.gc, 0, 0, sprite.width, sprite.height, x, y);
+}
 
-	GC gc = XCreateGC(display, window, GCClipMask, &values);
-
-	XCopyArea(display, sprite.pixmap, window, gc, 0, 0, sprite.width, sprite.height, x, y);
-
+void draw_rect(int x, int y, int width, int height, int red, int green, int blue)
+{
+	GC gc = XCreateGC(display, window, 0, NULL);
+	XSetForeground(display, gc, (red<<16) + (green<<8) + blue);
+	XFillRectangle(display, window, gc, x, y, width, height);
 	XFreeGC(display, gc);
+}
+
+void redraw_area(int x, int y, int width, int height)
+{
+	XClearArea(display, window, x, y, width, height, true);
+	XFlush(display);
+}
+
+void *game_loop()
+{
+	while (true) {
+		update();
+		//usleep(1 / FPS * 1000000);
+		usleep(1000000);
+	}
 }
 
 int main()
 {
+	XInitThreads();
+
 	display = XOpenDisplay(NULL);
 
 	unsigned long white = WhitePixel(display, DefaultScreen(display));
@@ -73,22 +106,30 @@ int main()
 
 	init();
 
-	XSelectInput(display, window, StructureNotifyMask);
+	XSelectInput(display, window, ExposureMask);
+
+	Atom deleteMessage = XInternAtom(display, "WM_DELETE_WINDOW", false);
+	XSetWMProtocols(display, window, &deleteMessage, 1);
 
 	XMapWindow(display, window);
-
-	GC gc = XCreateGC(display, window, 0, NULL);
-	XSetForeground(display, gc, black);
+	
+	pthread_t game_thread;
+	pthread_create(&game_thread, NULL, game_loop, NULL);
 
 	XEvent event;
 	for (;;) {
 		XNextEvent(display, &event);
 		switch (event.type) {
-			case MapNotify:
-				start();
+			case Expose:
+				draw();
 				break;
+			case ClientMessage:
+				if (event.xclient.data.l[0] == deleteMessage) goto exit;
 		}
 	}
+
+exit:
+	pthread_cancel(game_thread);
 
 	XCloseDisplay(display);
 

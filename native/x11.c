@@ -81,7 +81,11 @@ void draw_rect(int x, int y, int width, int height, int red, int green, int blue
 
 void redraw_area(int x, int y, int width, int height)
 {
-	XClearArea(display, window, x, y, width, height, true);
+	XEvent event;
+	memset(&event, 0, sizeof(event));
+	event.type = Expose;
+	event.xexpose.window = window;
+	XSendEvent(display, window, false, ExposureMask, &event);
 	XFlush(display);
 }
 

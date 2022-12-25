@@ -89,8 +89,7 @@ void *game_loop()
 {
 	while (true) {
 		update();
-		//usleep(1 / FPS * 1000000);
-		usleep(1000000);
+		usleep(1.0 / FPS * 1000000);
 	}
 }
 

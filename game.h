@@ -1,4 +1,4 @@
-#define FPS 10
+#define FPS 60
 #define BALL_SIZE 10
 #define BLOCK_SIZE 16
 #define WIDTH_BLOCKS 30

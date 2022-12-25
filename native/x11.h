@@ -6,7 +6,6 @@
 typedef struct sprite {
 	Pixmap pixmap;
 	Pixmap shapemask;
-	GC gc;
 	int width;
 	int height;
 } sprite_t;

@@ -45,14 +45,9 @@ sprite_t load_sprite(sprite_identifier_t sprite)
 	Pixmap pixmap, shapemask;
 	XpmCreatePixmapFromData(display, window, sprite, &pixmap, &shapemask, &attributes);
 
-	XGCValues values;
-	values.clip_mask = shapemask;
-	GC gc = XCreateGC(display, window, GCClipMask, &values);
-
 	sprite_t result = {
 		.pixmap = pixmap,
 		.shapemask = shapemask,
-		.gc = gc,
 		.width = width,
 		.height = height
 	};
@@ -62,12 +57,18 @@ sprite_t load_sprite(sprite_identifier_t sprite)
 void unload_sprite(sprite_t sprite)
 {
 	XFreePixmap(display, sprite.pixmap);
-	XFreeGC(display, sprite.gc);
 }
 
 void draw_sprite(sprite_t sprite, int x, int y)
 {
-	XCopyArea(display, sprite.pixmap, window, sprite.gc, 0, 0, sprite.width, sprite.height, x, y);
+	XGCValues values;
+	values.clip_mask = sprite.shapemask;
+	values.clip_x_origin = x;
+	values.clip_y_origin = y;
+	GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
+
+	XCopyArea(display, sprite.pixmap, window, gc, 0, 0, sprite.width, sprite.height, x, y);
+	XFreeGC(display, gc);
 }
 
 void draw_rect(int x, int y, int width, int height, int red, int green, int blue)

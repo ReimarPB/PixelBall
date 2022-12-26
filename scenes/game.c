@@ -13,7 +13,7 @@ struct block *level[HEIGHT_BLOCKS][WIDTH_BLOCKS] = { 0 };
 void init_game()
 {
 	ball = (struct ball){
-		.x = 0,
+		.x = 2,
 		.y = 0,
 		.x_vel = 0.0,
 		.y_vel = 0.1
@@ -22,7 +22,8 @@ void init_game()
 
 void update_game()
 {
-	level[8][3] = &BLOCK_GRASS;
+	level[8][0] = &BLOCK_GRASS;
+	level[6][1] = &BLOCK_GRASS;
 
 	for (int y = 0; y < sizeof(level) / sizeof(struct block*[WIDTH_BLOCKS]); y++) {
 		for (int x = 0; x < sizeof(level[y]) / sizeof(struct block); x++) {

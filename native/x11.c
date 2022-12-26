@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <pthread.h>
 
+#include "common.h"
 #include "x11.h"
 #include "../globals.h"
 
@@ -16,6 +17,8 @@ Window window;
 void init();
 void draw();
 void update();
+void onkeydown(enum key key);
+void onkeyup(enum key key);
 
 void set_window_title(char *title)
 {
@@ -97,6 +100,17 @@ void *game_loop()
 	}
 }
 
+enum key translate_keycode(KeySym keysym)
+{
+	switch (keysym) {
+		case XK_Left: return KEY_ARROW_LEFT;
+		case XK_Right: return KEY_ARROW_RIGHT;
+		case XK_Up: return KEY_ARROW_UP;
+		case XK_Down: return KEY_ARROW_DOWN;
+		default: return KEY_UNKNOWN;
+	}
+}
+
 int main()
 {
 	XInitThreads();
@@ -110,7 +124,7 @@ int main()
 
 	init();
 
-	XSelectInput(display, window, ExposureMask);
+	XSelectInput(display, window, ExposureMask | KeyPressMask | KeyReleaseMask);
 
 	Atom deleteMessage = XInternAtom(display, "WM_DELETE_WINDOW", false);
 	XSetWMProtocols(display, window, &deleteMessage, 1);
@@ -120,12 +134,35 @@ int main()
 	pthread_t game_thread;
 	pthread_create(&game_thread, NULL, game_loop, NULL);
 
+	XkbSetDetectableAutoRepeat(display, true, false);
+
 	XEvent event;
+	KeySym last_key = NULL;
 	for (;;) {
 		XNextEvent(display, &event);
+
+		enum key key;
+		KeySym keysym;
 		switch (event.type) {
 			case Expose:
 				draw();
+				break;
+			case KeyPress:
+				keysym = XKeycodeToKeysym(display, event.xkey.keycode, 0);
+				if (keysym == last_key) break;
+
+				if ((key = translate_keycode(keysym)))
+					onkeydown(key);
+
+				last_key = keysym;
+				break;
+			case KeyRelease:
+				keysym = XKeycodeToKeysym(display, event.xkey.keycode, 0);
+
+				if ((key = translate_keycode(keysym)))
+					onkeyup(key);
+
+				last_key = NULL;
 				break;
 			case ClientMessage:
 				if (event.xclient.data.l[0] == deleteMessage) goto exit;

@@ -1,7 +1,7 @@
-#include <X11/Xlib.h>
-
 #ifndef NATIVE_X11_H
 #define NATIVE_X11_H
+
+#include <X11/Xlib.h>
 
 #include "../assets/ball.xpm"
 #define SPRITE_BALL ball_xpm

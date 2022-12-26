@@ -20,3 +20,13 @@ void update()
 	update_game();
 }
 
+void onkeydown(enum key key)
+{
+	game_onkeydown(key);
+}
+
+void onkeyup(enum key key)
+{
+	game_onkeyup(key);
+}
+

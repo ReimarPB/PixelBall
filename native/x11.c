@@ -8,7 +8,7 @@
 #include <pthread.h>
 
 #include "x11.h"
-#include "../game.h"
+#include "../globals.h"
 
 Display *display;
 Window window;

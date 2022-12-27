@@ -1,8 +1,6 @@
 #include "../native/common.h"
+#include "../globals.h"
 #include "ball.h"
-
-#define BALL_SPEED 0.1
-#define BALL_MAX_SPEED 1.0
 
 void update_ball(struct ball *ball)
 {
@@ -13,8 +11,8 @@ void update_ball(struct ball *ball)
 	if (ball->going_right) ball->x_vel += BALL_SPEED * 2;
 
 	// Make velocity approach zero when no keys held down
-	if (ball->x_vel > 0) ball->x_vel -= BALL_SPEED;
-	else if (ball->x_vel < 0) ball->x_vel += BALL_SPEED;
+	if (ball->x_vel > 0)      ball->x_vel = MAX(ball->x_vel - BALL_SPEED, 0);
+	else if (ball->x_vel < 0) ball->x_vel = MIN(ball->x_vel + BALL_SPEED, 0);
 
 	if (ball->x_vel > BALL_MAX_SPEED) ball->x_vel = BALL_MAX_SPEED;
 	if (ball->x_vel < -BALL_MAX_SPEED) ball->x_vel = -BALL_MAX_SPEED;

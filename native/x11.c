@@ -15,7 +15,7 @@ Display *display;
 Window window;
 
 void init();
-void draw();
+void draw(int x, int y, int width, int height);
 void update();
 void onkeydown(enum key key);
 void onkeyup(enum key key);
@@ -88,6 +88,10 @@ void redraw_area(int x, int y, int width, int height)
 	memset(&event, 0, sizeof(event));
 	event.type = Expose;
 	event.xexpose.window = window;
+	event.xexpose.x = x;
+	event.xexpose.y = y;
+	event.xexpose.width = width;
+	event.xexpose.height = height;
 	XSendEvent(display, window, false, ExposureMask, &event);
 	XFlush(display);
 }
@@ -145,7 +149,8 @@ int main()
 		KeySym keysym;
 		switch (event.type) {
 			case Expose:
-				draw();
+				if (!event.xexpose.x && !event.xexpose.y && !event.xexpose.width && !event.xexpose.height) break;
+				draw(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
 				break;
 			case KeyPress:
 				keysym = XKeycodeToKeysym(display, event.xkey.keycode, 0);

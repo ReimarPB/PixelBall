@@ -9,10 +9,10 @@ void init()
 	set_window_title("Pixel Ball");
 }
 
-void draw()
+void draw(int x, int y, int width, int height)
 {
-	draw_rect(0, 0, WIDTH_PX, HEIGHT_PX, 140, 220, 255);
-	draw_game();
+	draw_rect(x, y, width, height, 140, 220, 255);
+	draw_game(x, y, width, height);
 }
 
 void update()

@@ -1,5 +1,9 @@
 #include <stdbool.h>
 
+#define BALL_SIZE 10
+#define BALL_SPEED 0.1
+#define BALL_MAX_SPEED 1.0
+
 struct ball {
 	float x;
 	float y;

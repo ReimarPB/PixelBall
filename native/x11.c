@@ -1,5 +1,6 @@
 #include <X11/Xlib.h>
 #include <X11/xpm.h>
+#include <X11/extensions/Xdbe.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -13,6 +14,7 @@
 
 Display *display;
 Window window;
+XdbeBackBuffer back_buffer = NULL;
 
 void init();
 void draw(int x, int y, int width, int height);
@@ -70,7 +72,7 @@ void draw_sprite(sprite_t sprite, int x, int y)
 	values.clip_y_origin = y;
 	GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
 
-	XCopyArea(display, sprite.pixmap, window, gc, 0, 0, sprite.width, sprite.height, x, y);
+	XCopyArea(display, sprite.pixmap, back_buffer, gc, 0, 0, sprite.width, sprite.height, x, y);
 	XFreeGC(display, gc);
 }
 
@@ -78,7 +80,7 @@ void draw_rect(int x, int y, int width, int height, int red, int green, int blue
 {
 	GC gc = XCreateGC(display, window, 0, NULL);
 	XSetForeground(display, gc, (red<<16) + (green<<8) + blue);
-	XFillRectangle(display, window, gc, x, y, width, height);
+	XFillRectangle(display, back_buffer, gc, x, y, width, height);
 	XFreeGC(display, gc);
 }
 
@@ -126,6 +128,17 @@ int main()
 
 	window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, WIDTH_PX, HEIGHT_PX, 0, white, white);
 
+	// Create back buffer for double buffering
+	XdbeSwapInfo swap_info;
+	int xdbe_major_version, xdbe_minor_version;
+	if (XdbeQueryExtension(display, &xdbe_major_version, &xdbe_minor_version)) {
+		back_buffer = XdbeAllocateBackBufferName(display, window, 0);
+		swap_info = (XdbeSwapInfo) {
+			.swap_window = window,
+			.swap_action = 0
+		};
+	}
+
 	init();
 
 	XSelectInput(display, window, ExposureMask | KeyPressMask | KeyReleaseMask);
@@ -172,6 +185,8 @@ int main()
 			case ClientMessage:
 				if (event.xclient.data.l[0] == deleteMessage) goto exit;
 		}
+
+		if (back_buffer) XdbeSwapBuffers(display, &swap_info, 1);
 	}
 
 exit:

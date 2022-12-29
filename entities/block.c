@@ -31,11 +31,11 @@ void standard_collision_checker(struct ball *ball, int block_x, int block_y)
 		// from top
 		if (ball_y_end > block_y_start && ball_y_start < block_y_start) {
 			ball->y = block_y - BALL_SIZE;
-			ball->y_vel = -2.0;
+			ball->y_vel = -3.4;
 		// from bottom
 		} else if (ball_y_start < block_y_end && ball_y_end > block_y_end) {
 			ball->y = block_y_end;
-			ball->y_vel = 2.0;
+			ball->y_vel = 3.4;
 		}
 	}
 }

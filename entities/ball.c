@@ -17,7 +17,7 @@ void update_ball(struct ball *ball)
 	if (ball->x_vel > BALL_MAX_SPEED) ball->x_vel = BALL_MAX_SPEED;
 	if (ball->x_vel < -BALL_MAX_SPEED) ball->x_vel = -BALL_MAX_SPEED;
 
-	ball->y_vel += 0.1;
+	ball->y_vel += 0.15;
 }
 
 void draw_ball(struct ball ball)

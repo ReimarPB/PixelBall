@@ -55,6 +55,8 @@ sprite_t load_sprite(sprite_identifier_t sprite)
 	Pixmap pixmap, shapemask;
 	XpmCreatePixmapFromData(display, window, sprite, &pixmap, &shapemask, &attributes);
 
+	XpmFreeAttributes(&attributes);
+
 	sprite_t result = {
 		.pixmap = pixmap,
 		.shapemask = shapemask,
@@ -67,6 +69,7 @@ sprite_t load_sprite(sprite_identifier_t sprite)
 void unload_sprite(sprite_t sprite)
 {
 	XFreePixmap(display, sprite.pixmap);
+	if (sprite.shapemask) XFreePixmap(display, sprite.shapemask);
 }
 
 void draw_sprite(sprite_t sprite, int x, int y)

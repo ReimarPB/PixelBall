@@ -1,6 +1,6 @@
 #include <stdbool.h>
 
-#define BALL_SIZE 20
+#define BALL_SIZE 16
 #define BALL_SPEED 0.2
 #define BALL_MAX_SPEED 2.0
 

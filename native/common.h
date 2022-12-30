@@ -12,6 +12,12 @@ enum key {
 	KEY_ARROW_DOWN
 };
 
+struct color {
+	unsigned char red;
+	unsigned char green;
+	unsigned char blue;
+};
+
 void set_window_title(char *title);
 
 void set_window_icon(sprite_t icon);
@@ -22,7 +28,7 @@ void unload_sprite(sprite_t sprite);
 
 void draw_sprite(sprite_t sprite, int x, int y);
 
-void draw_rect(int x, int y, int width, int height, int red, int green, int blue);
+void draw_rect(struct color color, int x, int y, int width, int height);
 
 void redraw_area(int x, int y, int width, int height);
 

@@ -1,9 +1,10 @@
 #include "ball.h"
 #include "block.h"
+#include "particle.h"
 #include "../globals.h"
 #include "../native/common.h"
 
-void standard_collision_checker(struct ball *ball, int block_x, int block_y)
+void standard_collision_checker(struct ball *ball, struct block block, int block_x, int block_y)
 {
 	int ball_x_start = ball->x;
 	int ball_x_end = ball->x + BALL_SIZE;
@@ -32,6 +33,10 @@ void standard_collision_checker(struct ball *ball, int block_x, int block_y)
 		if (ball_y_end > block_y_start && ball_y_start < block_y_start) {
 			ball->y = block_y - BALL_SIZE;
 			ball->y_vel = -3.4;
+
+			// Add particles
+			add_particle(block.particle_color, ball->x + BALL_SIZE / 2, block_y, 0, 0.5, -0.4, -0.6);
+			add_particle(block.particle_color, ball->x + BALL_SIZE / 2, block_y, -0.5, 0, -0.4, -0.6);
 		// from bottom
 		} else if (ball_y_start < block_y_end && ball_y_end > block_y_end) {
 			ball->y = block_y_end;
@@ -42,6 +47,7 @@ void standard_collision_checker(struct ball *ball, int block_x, int block_y)
 
 struct block BLOCK_GRASS = {
 	.sprite = SPRITE_GRASS,
+	.particle_color = (struct color) { .red = 0, .green = 231, .blue = 0 },
 	.check_collision = &standard_collision_checker,
 };
 

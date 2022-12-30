@@ -22,6 +22,11 @@ void update();
 void onkeydown(enum key key);
 void onkeyup(enum key key);
 
+int parse_color(struct color color)
+{
+	return (color.red<<16) + (color.green<<8) + color.blue;
+}
+
 void set_window_title(char *title)
 {
 	XStoreName(display, window, title);
@@ -76,10 +81,10 @@ void draw_sprite(sprite_t sprite, int x, int y)
 	XFreeGC(display, gc);
 }
 
-void draw_rect(int x, int y, int width, int height, int red, int green, int blue)
+void draw_rect(struct color color, int x, int y, int width, int height)
 {
 	GC gc = XCreateGC(display, window, 0, NULL);
-	XSetForeground(display, gc, (red<<16) + (green<<8) + blue);
+	XSetForeground(display, gc, parse_color(color));
 	XFillRectangle(display, back_buffer, gc, x, y, width, height);
 	XFreeGC(display, gc);
 }

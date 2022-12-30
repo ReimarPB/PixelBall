@@ -61,7 +61,7 @@ void update_game()
 		for (int x = 0; x < sizeof(level[y]) / sizeof(struct block); x++) {
 			if (level[y][x] == NULL) continue;
 
-			level[y][x]->check_collision(&ball, x * BLOCK_SIZE, y * BLOCK_SIZE);
+			level[y][x]->check_collision(&ball, *level[y][x], x * BLOCK_SIZE, y * BLOCK_SIZE);
 		}
 	}
 }

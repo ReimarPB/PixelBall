@@ -12,6 +12,9 @@ void init()
 	srand(time(0));
 	init_game();
 	set_window_title("Pixel Ball");
+
+	sprite_t icon = load_sprite(SPRITE_ICON);
+	set_window_icon(icon);
 }
 
 void draw(int x, int y, int width, int height)

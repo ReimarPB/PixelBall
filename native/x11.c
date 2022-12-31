@@ -14,7 +14,8 @@
 
 Display *display;
 Window window;
-XdbeBackBuffer back_buffer = NULL;
+XdbeBackBuffer back_buffer;
+bool has_back_buffer = false;
 
 void init();
 void draw(int x, int y, int width, int height);
@@ -103,13 +104,13 @@ void redraw_area(int x, int y, int width, int height)
 	event.xexpose.width = width;
 	event.xexpose.height = height;
 	XSendEvent(display, window, false, ExposureMask, &event);
-	XFlush(display);
 }
 
 void *game_loop()
 {
 	while (true) {
 		update();
+		XFlush(display);
 		usleep(1.0 / FPS * 1000000);
 	}
 }
@@ -140,7 +141,10 @@ int main()
 	XdbeSwapInfo swap_info;
 	int xdbe_major_version, xdbe_minor_version;
 	if (XdbeQueryExtension(display, &xdbe_major_version, &xdbe_minor_version)) {
+		has_back_buffer = true;
+
 		back_buffer = XdbeAllocateBackBufferName(display, window, 0);
+
 		swap_info = (XdbeSwapInfo) {
 			.swap_window = window,
 			.swap_action = 0
@@ -154,6 +158,9 @@ int main()
 	Atom deleteMessage = XInternAtom(display, "WM_DELETE_WINDOW", false);
 	XSetWMProtocols(display, window, &deleteMessage, 1);
 
+	XVisualInfo vinfo;
+	XMatchVisualInfo(display, DefaultScreen(display), 32, TrueColor, &vinfo);
+
 	XMapWindow(display, window);
 	
 	pthread_t game_thread;
@@ -162,7 +169,7 @@ int main()
 	XkbSetDetectableAutoRepeat(display, true, false);
 
 	XEvent event;
-	KeySym last_key = NULL;
+	KeySym last_key;
 	for (;;) {
 		XNextEvent(display, &event);
 
@@ -194,7 +201,7 @@ int main()
 				if (event.xclient.data.l[0] == deleteMessage) goto exit;
 		}
 
-		if (back_buffer) XdbeSwapBuffers(display, &swap_info, 1);
+		if (has_back_buffer) XdbeSwapBuffers(display, &swap_info, 1);
 	}
 
 exit:

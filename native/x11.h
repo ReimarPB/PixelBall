@@ -3,6 +3,9 @@
 
 #include <X11/Xlib.h>
 
+#include "../assets/icon.xpm"
+#define SPRITE_ICON icon_xpm
+
 #include "../assets/ball.xpm"
 #define SPRITE_BALL ball_xpm
 

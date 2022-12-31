@@ -1,3 +1,6 @@
+#ifndef GLOBALS_H
+#define GLOBALS_H
+
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
@@ -7,4 +10,11 @@
 #define HEIGHT_BLOCKS 15
 #define WIDTH_PX WIDTH_BLOCKS * BLOCK_SIZE
 #define HEIGHT_PX HEIGHT_BLOCKS * BLOCK_SIZE
+
+enum axis {
+	X_AXIS,
+	Y_AXIS,
+};
+
+#endif
 

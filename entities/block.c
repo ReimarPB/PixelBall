@@ -4,50 +4,35 @@
 #include "../globals.h"
 #include "../native/common.h"
 
-void standard_collision_checker(struct ball *ball, struct block block, int block_x, int block_y)
+bool standard_collision_handler(struct ball *ball, struct block block, int block_x, int block_y, enum axis axis)
 {
-	int ball_x_start = ball->x;
-	int ball_x_end = ball->x + BALL_SIZE;
-	int ball_y_start = ball->y;
-	int ball_y_end = ball->y + BALL_SIZE;
-	int block_x_start = block_x;
-	int block_x_end = block_x + BLOCK_SIZE;
-	int block_y_start = block_y;
-	int block_y_end = block_y + BLOCK_SIZE;
+	switch (axis) {
+		case X_AXIS:
 
-	// Check collisions
-	if (ball_y_start >= block_y_start && ball_y_start <= block_y_end) {
-		// from left
-		if (ball_x_end > block_x_start && ball_x_start < block_x_start) {
-			ball->x = block_x_start - BALL_SIZE;
-			ball->x_vel = 1;
-		// from right
-		} else if (ball_x_start < block_x_end && ball_x_end > block_x_end) {
-			ball->x = block_x_end;
-			ball->x_vel = 1;
-		}
+			if (ball->x_vel > 0) ball->x_vel = -1;
+			else ball->x_vel = 1;
+
+			break;
+		case Y_AXIS:
+
+			if (ball->y_vel < 0) {
+				ball->y_vel = 3.4;
+			} else {
+				ball->y_vel = -3.4;
+
+				add_particle(block.particle_color, ball->x + BALL_SIZE / 2, block_y * BLOCK_SIZE, 0,  0.5, -0.4, -0.6);
+				add_particle(block.particle_color, ball->x + BALL_SIZE / 2, block_y * BLOCK_SIZE, -0.5, 0, -0.4, -0.6);
+			}
+
+			break;
 	}
 
-	if (ball_x_start >= block_x_start && ball_x_start <= block_x_end) {
-		// from top
-		if (ball_y_end > block_y_start && ball_y_start < block_y_start) {
-			ball->y = block_y - BALL_SIZE;
-			ball->y_vel = -3.4;
-
-			// Add particles
-			add_particle(block.particle_color, ball->x + BALL_SIZE / 2, block_y, 0, 0.5, -0.4, -0.6);
-			add_particle(block.particle_color, ball->x + BALL_SIZE / 2, block_y, -0.5, 0, -0.4, -0.6);
-		// from bottom
-		} else if (ball_y_start < block_y_end && ball_y_end > block_y_end) {
-			ball->y = block_y_end;
-			ball->y_vel = 3.4;
-		}
-	}
+	return true;
 }
 
 struct block BLOCK_GRASS = {
 	.sprite = SPRITE_GRASS,
 	.particle_color = (struct color) { .red = 0, .green = 231, .blue = 0 },
-	.check_collision = &standard_collision_checker,
+	.collision_handler = &standard_collision_handler,
 };
 

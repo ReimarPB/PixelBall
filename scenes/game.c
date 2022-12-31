@@ -38,7 +38,6 @@ void init_game()
 	level[8][0] = &BLOCK_GRASS;
 	level[8][1] = &BLOCK_GRASS;
 	level[8][2] = &BLOCK_GRASS;
-	level[8][3] = &BLOCK_GRASS;
 	level[8][4] = &BLOCK_GRASS;
 	level[8][5] = &BLOCK_GRASS;
 	level[8][6] = &BLOCK_GRASS;
@@ -56,14 +55,6 @@ void update_game()
 	update_ball(&ball);
 	redraw_area(keep_in_width_range(old_ball.x), keep_in_height_range(old_ball.y), BALL_SIZE, BALL_SIZE);
 	redraw_area(keep_in_width_range(ball.x),     keep_in_height_range(ball.y),     BALL_SIZE, BALL_SIZE);
-
-	for (int y = 0; y < HEIGHT_BLOCKS; y++) {
-		for (int x = 0; x < WIDTH_BLOCKS; x++) {
-			if (level[y][x] == NULL) continue;
-
-			level[y][x]->check_collision(&ball, *level[y][x], x * BLOCK_SIZE, y * BLOCK_SIZE);
-		}
-	}
 }
 
 void draw_game(int x, int y, int width, int height)

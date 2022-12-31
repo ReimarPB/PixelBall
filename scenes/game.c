@@ -57,8 +57,8 @@ void update_game()
 	redraw_area(keep_in_width_range(old_ball.x), keep_in_height_range(old_ball.y), BALL_SIZE, BALL_SIZE);
 	redraw_area(keep_in_width_range(ball.x),     keep_in_height_range(ball.y),     BALL_SIZE, BALL_SIZE);
 
-	for (int y = 0; y < sizeof(level) / sizeof(struct block*[WIDTH_BLOCKS]); y++) {
-		for (int x = 0; x < sizeof(level[y]) / sizeof(struct block); x++) {
+	for (int y = 0; y < HEIGHT_BLOCKS; y++) {
+		for (int x = 0; x < WIDTH_BLOCKS; x++) {
 			if (level[y][x] == NULL) continue;
 
 			level[y][x]->check_collision(&ball, *level[y][x], x * BLOCK_SIZE, y * BLOCK_SIZE);

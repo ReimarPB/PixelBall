@@ -95,6 +95,9 @@ void game_onkeydown(enum key key)
 		case KEY_ARROW_RIGHT:
 			ball.going_right = true;
 			break;
+		case KEY_ESCAPE:
+			pause();
+			break;
 	}
 }
 
@@ -106,9 +109,6 @@ void game_onkeyup(enum key key)
 			break;
 		case KEY_ARROW_RIGHT:
 			ball.going_right = false;
-			break;
-		case KEY_ESCAPE:
-			pause();
 			break;
 	}
 }

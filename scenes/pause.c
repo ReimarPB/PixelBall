@@ -4,37 +4,35 @@
 #include "scene.h"
 #include "game.h"
 
-float pause_brightness;
 bool ending_pause = false;
 
 void pause()
 {
-	pause_brightness = 1.0;
 	scene = SCENE_PAUSE;
 }
 
 void update_pause()
 {
-	if (!ending_pause && pause_brightness > 0.6) {
-		pause_brightness -= 0.05;
+	if (!ending_pause && brightness > 0.6) {
+		brightness -= 0.05;
+		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
 	}
 
 	if (ending_pause) {
-		if (pause_brightness < 1.0)
-			pause_brightness += 0.1;
-		else
+		if (brightness < 1.0) {
+			brightness += 0.1;
+		} else {
 			scene = SCENE_GAME;
-	}
+			ending_pause = false;
+		}
 
-	brightness = pause_brightness;
+		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+	}
 }
 
 void draw_pause(int x, int y, int width, int height)
 {
-	printf("%f\n", brightness);
-	//brightness = pause_brightness;
 	draw_game(0, 0, WIDTH_PX, HEIGHT_PX);
-	//brightness = 1.0;
 }
 
 void pause_onkeydown(enum key key)

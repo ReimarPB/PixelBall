@@ -27,6 +27,7 @@ void draw(int x, int y, int width, int height)
 		rgb(140, 220, 255),
 		x, y, width, height
 	);
+
 	switch (scene) {
 		case SCENE_GAME:  draw_game(x, y, width, height);  break;
 		case SCENE_PAUSE: draw_pause(x, y, width, height); break;
@@ -43,7 +44,10 @@ void update()
 
 void onkeydown(enum key key)
 {
-	game_onkeydown(key);
+	switch (scene) {
+		case SCENE_GAME:  game_onkeydown(key);  break;
+		case SCENE_PAUSE: pause_onkeydown(key); break;
+	}
 }
 
 void onkeyup(enum key key)

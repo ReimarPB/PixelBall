@@ -4,6 +4,8 @@
 
 #include "../entities/ball.h"
 #include "../entities/block.h"
+#include "../entities/particle.h"
+#include "../scenes/pause.h"
 #include "../native/common.h"
 #include "../globals.h"
 #include "game.h"
@@ -55,6 +57,7 @@ void update_game()
 	update_ball(&ball);
 	redraw_area(keep_in_width_range(old_ball.x), keep_in_height_range(old_ball.y), BALL_SIZE, BALL_SIZE);
 	redraw_area(keep_in_width_range(ball.x),     keep_in_height_range(ball.y),     BALL_SIZE, BALL_SIZE);
+	update_particles();
 }
 
 void draw_game(int x, int y, int width, int height)
@@ -80,6 +83,7 @@ void draw_game(int x, int y, int width, int height)
 	}
 
 	draw_ball(ball);
+	draw_particles(x, y, width, height);
 }
 
 void game_onkeydown(enum key key)
@@ -102,6 +106,9 @@ void game_onkeyup(enum key key)
 			break;
 		case KEY_ARROW_RIGHT:
 			ball.going_right = false;
+			break;
+		case KEY_ESCAPE:
+			pause();
 			break;
 	}
 }

@@ -1,22 +1,31 @@
 #ifndef NATIVE_COMMON_H
 #define NATIVE_COMMON_H
 
+#include <stdint.h>
+
 // TODO check platform
 #include "x11.h"
+
+float brightness;
 
 enum key {
 	KEY_UNKNOWN,
 	KEY_ARROW_LEFT,
 	KEY_ARROW_RIGHT,
 	KEY_ARROW_UP,
-	KEY_ARROW_DOWN
+	KEY_ARROW_DOWN,
+	KEY_ESCAPE,
 };
 
 struct color {
-	unsigned char red;
-	unsigned char green;
-	unsigned char blue;
+	uint8_t red;
+	uint8_t green;
+	uint8_t blue;
 };
+
+struct color rgb(uint8_t red, uint8_t green, uint8_t blue);
+
+void apply_brightness(struct color *color, float brightness);
 
 void set_window_title(char *title);
 

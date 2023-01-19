@@ -1,5 +1,7 @@
 #include "../native/common.h"
 
+#include "../globals.h"
+
 extern struct block *level[HEIGHT_BLOCKS][WIDTH_BLOCKS];
 
 void init_game();

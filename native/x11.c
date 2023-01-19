@@ -16,6 +16,7 @@ Display *display;
 Window window;
 XdbeBackBuffer back_buffer;
 bool has_back_buffer = false;
+float brightness = 1.0;
 
 void init();
 void draw(int x, int y, int width, int height);
@@ -23,9 +24,14 @@ void update();
 void onkeydown(enum key key);
 void onkeyup(enum key key);
 
-int parse_color(struct color color)
+unsigned long parse_color(struct color color)
 {
-	return (color.red<<16) + (color.green<<8) + color.blue;
+	return (color.red << 16) + (color.green << 8) + color.blue;
+}
+
+struct color to_color(unsigned long color)
+{
+	return rgb((color & 0xFF0000) >> 16, (color & 0xFF00) >> 8, color & 0xFF);
 }
 
 void set_window_title(char *title)
@@ -81,6 +87,23 @@ void draw_sprite(sprite_t sprite, int x, int y)
 	values.clip_y_origin = y;
 	GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
 
+	// Darken sprite if necessarry
+	if (brightness < 1) {
+		XImage *image = XGetImage(display, sprite.pixmap, 0, 0, sprite.width, sprite.height, AllPlanes, ZPixmap);
+
+		for (int x = 0; x < sprite.width; x++) {
+			for (int y = 0; y < sprite.height; y++) {
+				struct color color = to_color(XGetPixel(image, x, y));
+				apply_brightness(&color, brightness);
+				XPutPixel(image, x, y, parse_color(color));
+			}
+		}
+
+		XPutImage(display, sprite.pixmap, DefaultGC(display, DefaultScreen(display)), image, 0, 0, 0, 0, sprite.width, sprite.height);
+		XDestroyImage(image);
+	}
+
+
 	XCopyArea(display, sprite.pixmap, back_buffer, gc, 0, 0, sprite.width, sprite.height, x, y);
 	XFreeGC(display, gc);
 }
@@ -88,8 +111,12 @@ void draw_sprite(sprite_t sprite, int x, int y)
 void draw_rect(struct color color, int x, int y, int width, int height)
 {
 	GC gc = XCreateGC(display, window, 0, NULL);
+
+	if (brightness < 1) apply_brightness(&color, brightness);
+
 	XSetForeground(display, gc, parse_color(color));
 	XFillRectangle(display, back_buffer, gc, x, y, width, height);
+
 	XFreeGC(display, gc);
 }
 
@@ -122,6 +149,7 @@ enum key translate_keycode(KeySym keysym)
 		case XK_Right: return KEY_ARROW_RIGHT;
 		case XK_Up: return KEY_ARROW_UP;
 		case XK_Down: return KEY_ARROW_DOWN;
+		case XK_Escape: return KEY_ESCAPE;
 		default: return KEY_UNKNOWN;
 	}
 }

@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include "../globals.h"
 #include "../native/common.h"
+#include "../ui/text.h"
 #include "scene.h"
 #include "game.h"
 
@@ -33,6 +34,11 @@ void update_pause()
 void draw_pause(int x, int y, int width, int height)
 {
 	draw_game(0, 0, WIDTH_PX, HEIGHT_PX);
+
+	float old_brightness = brightness;
+	brightness = 1.0;
+	draw_text("PAUSED", font_white, 15, 15);
+	brightness = old_brightness;
 }
 
 void pause_onkeydown(enum key key)

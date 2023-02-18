@@ -22,6 +22,7 @@ void draw(int x, int y, int width, int height);
 void update();
 void onkeydown(enum key key);
 void onkeyup(enum key key);
+void unload();
 
 unsigned long parse_color(struct color color)
 {
@@ -86,7 +87,6 @@ void draw_sprite(sprite_t sprite, int x, int y)
 	values.clip_y_origin = y;
 	GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
 
-	// Darken sprite if necessarry
 	if (brightness < 1) {
 		XImage *image = XGetImage(display, sprite.pixmap, 0, 0, sprite.width, sprite.height, AllPlanes, ZPixmap);
 
@@ -104,6 +104,20 @@ void draw_sprite(sprite_t sprite, int x, int y)
 
 
 	XCopyArea(display, sprite.pixmap, back_buffer, gc, 0, 0, sprite.width, sprite.height, x, y);
+	XFreeGC(display, gc);
+}
+
+void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite_y, int sprite_width, int sprite_height)
+{
+	XGCValues values;
+	values.clip_mask = sprite.shapemask;
+	values.clip_x_origin = x;
+	values.clip_y_origin = y;
+	GC gc = XCreateGC(display, window, 0, &values); // TODO make transparency work
+
+	// TODO brightness
+
+	XCopyArea(display, sprite.pixmap, back_buffer, gc, sprite_x, sprite_y, sprite_width, sprite_height, x, y);
 	XFreeGC(display, gc);
 }
 
@@ -182,8 +196,8 @@ int main()
 
 	XSelectInput(display, window, ExposureMask | KeyPressMask | KeyReleaseMask);
 
-	Atom deleteMessage = XInternAtom(display, "WM_DELETE_WINDOW", false);
-	XSetWMProtocols(display, window, &deleteMessage, 1);
+	Atom wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", false);
+	XSetWMProtocols(display, window, &wm_delete_window, 1);
 
 	XVisualInfo vinfo;
 	XMatchVisualInfo(display, DefaultScreen(display), 32, TrueColor, &vinfo);
@@ -225,13 +239,15 @@ int main()
 				last_key = NULL;
 				break;
 			case ClientMessage:
-				if (event.xclient.data.l[0] == deleteMessage) goto exit;
+				if (event.xclient.data.l[0] == wm_delete_window) goto exit;
 		}
 
 		if (has_back_buffer) XdbeSwapBuffers(display, &swap_info, 1);
 	}
 
 exit:
+	unload();
+
 	pthread_cancel(game_thread);
 
 	XCloseDisplay(display);

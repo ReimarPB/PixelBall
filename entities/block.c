@@ -32,7 +32,7 @@ bool standard_collision_handler(struct ball *ball, struct block block, int block
 
 struct block BLOCK_GRASS = {
 	.sprite = SPRITE_GRASS,
-	.particle_color = (struct color) { .red = 0, .green = 231, .blue = 0 },
+	.particle_color = (struct color) { .red = 0, .green = 211, .blue = 0 },
 	.collision_handler = &standard_collision_handler,
 };
 

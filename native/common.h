@@ -37,6 +37,8 @@ void unload_sprite(sprite_t sprite);
 
 void draw_sprite(sprite_t sprite, int x, int y);
 
+void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite_y, int sprite_width, int sprite_height);
+
 void draw_rect(struct color color, int x, int y, int width, int height);
 
 void redraw_area(int x, int y, int width, int height);

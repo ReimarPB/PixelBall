@@ -8,23 +8,28 @@
 #include "entities/particle.h"
 #include "native/x11.h"
 #include "native/common.h"
+#include "ui/text.h"
 
 enum scene scene = SCENE_GAME;
+sprite_t icon;
 
 void init()
 {
 	srand(time(0));
+
 	init_game();
+	init_fonts();
+
 	set_window_title("Pixel Ball");
 
-	sprite_t icon = load_sprite(SPRITE_ICON);
+	icon = load_sprite(SPRITE_ICON);
 	set_window_icon(icon);
 }
 
 void draw(int x, int y, int width, int height)
 {
 	draw_rect(
-		rgb(140, 220, 255),
+		rgb(129, 212, 250),
 		x, y, width, height
 	);
 
@@ -53,5 +58,11 @@ void onkeydown(enum key key)
 void onkeyup(enum key key)
 {
 	game_onkeyup(key);
+}
+
+void unload()
+{
+	unload_sprite(icon);
+	unload_fonts();
 }
 

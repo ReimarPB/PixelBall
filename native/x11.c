@@ -16,7 +16,6 @@ Display *display;
 Window window;
 XdbeBackBuffer back_buffer;
 bool has_back_buffer = false;
-float brightness = 1.0;
 
 void init();
 void draw(int x, int y, int width, int height);

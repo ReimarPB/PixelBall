@@ -9,6 +9,8 @@
 #include "native/x11.h"
 #include "native/common.h"
 
+enum scene scene = SCENE_GAME;
+
 void init()
 {
 	srand(time(0));
@@ -17,8 +19,6 @@ void init()
 
 	sprite_t icon = load_sprite(SPRITE_ICON);
 	set_window_icon(icon);
-
-	scene = SCENE_GAME;
 }
 
 void draw(int x, int y, int width, int height)

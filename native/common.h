@@ -6,8 +6,6 @@
 // TODO check platform
 #include "x11.h"
 
-float brightness;
-
 enum key {
 	KEY_UNKNOWN,
 	KEY_ARROW_LEFT,
@@ -22,6 +20,8 @@ struct color {
 	uint8_t green;
 	uint8_t blue;
 };
+
+extern float brightness;
 
 struct color rgb(uint8_t red, uint8_t green, uint8_t blue);
 

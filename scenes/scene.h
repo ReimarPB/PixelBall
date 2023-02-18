@@ -3,5 +3,5 @@ enum scene {
 	SCENE_PAUSE,
 };
 
-enum scene scene;
+extern enum scene scene;
 

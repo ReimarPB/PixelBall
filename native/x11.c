@@ -111,9 +111,9 @@ void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite
 {
 	XGCValues values;
 	values.clip_mask = sprite.shapemask;
-	values.clip_x_origin = x;
-	values.clip_y_origin = y;
-	GC gc = XCreateGC(display, window, 0, &values); // TODO make transparency work
+	values.clip_x_origin = x - sprite_x;
+	values.clip_y_origin = y - sprite_y;
+	GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
 
 	// TODO brightness
 

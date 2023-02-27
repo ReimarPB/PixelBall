@@ -15,8 +15,11 @@
 #include "../assets/font_5x7.xpm"
 #define SPRITE_FONT_5x7 font_5x7_xpm
 
-#include "../assets/font_9x14.xpm"
-#define SPRITE_FONT_9x14 font_9x14_xpm
+#include "../assets/font_5x7_x2.xpm"
+#define SPRITE_FONT_5x7_x2 font_5x7_x2_xpm
+
+#include "../assets/font_5x7_x4.xpm"
+#define SPRITE_FONT_5x7_x4 font_5x7_x4_xpm
 
 typedef struct sprite {
 	Pixmap pixmap;

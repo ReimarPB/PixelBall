@@ -7,7 +7,7 @@
 
 const char *FONT_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-struct font *font_5x7, *font_9x14;
+struct font *font_5x7, *font_5x7_x2, *font_5x7_x4, *font_9x14;
 
 void init_fonts()
 {
@@ -19,21 +19,31 @@ void init_fonts()
 		.spacing = 2,
 	};
 
-	font_9x14 = malloc(sizeof(struct font));
-	*font_9x14 = (struct font) {
-		.sprite = load_sprite(SPRITE_FONT_9x14),
-		.char_width = 9,
+	font_5x7_x2 = malloc(sizeof(struct font));
+	*font_5x7_x2 = (struct font) {
+		.sprite = load_sprite(SPRITE_FONT_5x7_x2),
+		.char_width = 10,
 		.char_height = 14,
-		.spacing = 2,
+		.spacing = 4,
+	};
+
+	font_5x7_x4 = malloc(sizeof(struct font));
+	*font_5x7_x4 = (struct font) {
+		.sprite = load_sprite(SPRITE_FONT_5x7_x4),
+		.char_width = 20,
+		.char_height = 28,
+		.spacing = 8,
 	};
 }
 
 void unload_fonts()
 {
 	unload_sprite(font_5x7->sprite);
-	unload_sprite(font_9x14->sprite);
+	unload_sprite(font_5x7_x2->sprite);
+	unload_sprite(font_5x7_x4->sprite);
 	free(font_5x7);
-	free(font_9x14);
+	free(font_5x7_x2);
+	free(font_5x7_x4);
 }
 
 void draw_text(char *text, struct font *font, int x, int y)

@@ -7,7 +7,7 @@ struct font {
 	int spacing;
 };
 
-extern struct font *font_5x7, *font_9x14;
+extern struct font *font_5x7, *font_5x7_x2, *font_5x7_x4, *font_9x14;
 
 void init_fonts();
 

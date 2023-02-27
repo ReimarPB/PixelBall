@@ -12,6 +12,12 @@
 #include "../assets/grass.xpm"
 #define SPRITE_GRASS grass_xpm
 
+#include "../assets/font_5x7.xpm"
+#define SPRITE_FONT_5x7 font_5x7_xpm
+
+#include "../assets/font_9x14.xpm"
+#define SPRITE_FONT_9x14 font_9x14_xpm
+
 typedef struct sprite {
 	Pixmap pixmap;
 	Pixmap shapemask;

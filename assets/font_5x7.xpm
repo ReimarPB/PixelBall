@@ -1,5 +1,5 @@
 /* XPM */
-static char * font_xpm[] = {
+static char * font_5x7_xpm[] = {
 "180 7 2 1",
 " 	c None",
 ".	c #FFFFFF",

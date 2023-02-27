@@ -1,5 +1,11 @@
 #include "../native/common.h"
 
+enum text_align {
+	ALIGN_LEFT,
+	ALIGN_CENTER,
+	ALIGN_RIGHT,
+};
+
 struct font {
 	sprite_t sprite;
 	int char_width;
@@ -13,5 +19,5 @@ void init_fonts();
 
 void unload_fonts();
 
-void draw_text(char *text, struct font *font, int x, int y);
+void draw_text(char *text, struct font *font, enum text_align align, int x, int y);
 

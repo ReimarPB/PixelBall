@@ -37,7 +37,7 @@ void draw_pause(int x, int y, int width, int height)
 
 	float old_brightness = brightness;
 	brightness = 1.0;
-	draw_text("PAUSED", font_5x7_x4, 15, 15);
+	draw_text("PAUSED", font_5x7_x4, ALIGN_CENTER, WIDTH_PX / 2, 50);
 	brightness = old_brightness;
 }
 

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../globals.h"
 #include "text.h"
 #include "../native/common.h"
 
@@ -46,13 +47,21 @@ void unload_fonts()
 	free(font_5x7_x4);
 }
 
-void draw_text(char *text, struct font *font, int x, int y)
+void draw_text(char *text, struct font *font, enum text_align align, int x, int y)
 {
+	int text_x, text_width = strlen(text) * font->char_width + (strlen(text) - 1) * font->spacing;
+	switch (align) {
+		case ALIGN_LEFT:   text_x = x;                  break;
+		case ALIGN_CENTER: text_x = x - text_width / 2; break;
+		case ALIGN_RIGHT:  text_x = WIDTH_PX - x;       break;
+	}
+
 	for (int i = 0; i < strlen(text); i++) {
 		int index = strchr(FONT_STRING, text[i]) - FONT_STRING; // TODO validate
+
 		draw_partial_sprite(
 			font->sprite,
-			x + i * font->char_width + (i-1) * font->spacing, y,
+			text_x + i * font->char_width + (i-1) * font->spacing, y,
 			index * font->char_width, 0,
 			font->char_width, font->char_height
 		);

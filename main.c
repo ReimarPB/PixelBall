@@ -9,6 +9,7 @@
 #include "native/x11.h"
 #include "native/common.h"
 #include "ui/text.h"
+#include "ui/button.h"
 
 enum scene scene = SCENE_GAME;
 sprite_t icon;
@@ -19,6 +20,7 @@ void init()
 
 	init_game();
 	init_fonts();
+	init_buttons();
 
 	set_window_title("Pixel Ball");
 
@@ -28,15 +30,12 @@ void init()
 
 void draw(int x, int y, int width, int height)
 {
-	draw_rect(
-		rgb(129, 212, 250),
-		x, y, width, height
-	);
-
 	switch (scene) {
 		case SCENE_GAME:  draw_game(x, y, width, height);  break;
 		case SCENE_PAUSE: draw_pause(x, y, width, height); break;
 	}
+
+	draw_buttons(x, y, width, height);
 }
 
 void update()

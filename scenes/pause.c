@@ -2,27 +2,46 @@
 #include "../globals.h"
 #include "../native/common.h"
 #include "../ui/text.h"
+#include "../ui/button.h"
 #include "scene.h"
 #include "game.h"
 
 bool ending_pause = false;
+float pause_brightness;
+
+void test()
+{
+}
+
+static struct button pause_buttons[] = {
+	(struct button) {
+		.text = "RESUME",
+		.x = WIDTH_PX / 2,
+		.y = 150,
+		.callback = test,
+		.type = BUTTON_TYPE_STANDARD,
+	},
+};
 
 void pause()
 {
 	scene = SCENE_PAUSE;
+	add_button(pause_buttons[0]);
+	pause_brightness = 1.0;
 }
 
 void update_pause()
 {
-	if (!ending_pause && brightness > 0.6) {
-		brightness -= 0.05;
+	if (!ending_pause && pause_brightness > 0.6) {
+		pause_brightness -= 0.05;
 		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
 	}
 
 	if (ending_pause) {
-		if (brightness < 1.0) {
-			brightness += 0.1;
+		if (pause_brightness < 1.0) {
+			pause_brightness += 0.1;
 		} else {
+			clear_buttons();
 			scene = SCENE_GAME;
 			ending_pause = false;
 		}
@@ -33,12 +52,21 @@ void update_pause()
 
 void draw_pause(int x, int y, int width, int height)
 {
+	float old_brightness = brightness;
+	brightness = pause_brightness;
+
+	// Background
+	draw_rect(
+		rgb(129, 212, 250),
+		x, y, width, height
+	);
+
+
 	draw_game(0, 0, WIDTH_PX, HEIGHT_PX);
 
-	float old_brightness = brightness;
-	brightness = 1.0;
-	draw_text("PAUSED", font_5x7_x4, ALIGN_CENTER, WIDTH_PX / 2, 50);
 	brightness = old_brightness;
+
+	draw_text("PAUSED", font_5x7_x4, ALIGN_CENTER, WIDTH_PX / 2, 50);
 }
 
 void pause_onkeydown(enum key key)

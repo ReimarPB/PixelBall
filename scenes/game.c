@@ -62,6 +62,12 @@ void update_game()
 
 void draw_game(int x, int y, int width, int height)
 {
+	// Background
+	draw_rect(
+		rgb(129, 212, 250),
+		x, y, width, height
+	);
+
 	int min_block_x = floor(x / BLOCK_SIZE);
 	int max_block_x = ceil((x + width) / BLOCK_SIZE);
 	int min_block_y = floor(y / BLOCK_SIZE);

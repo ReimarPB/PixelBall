@@ -3,6 +3,7 @@
 #include "../native/common.h"
 #include "../ui/text.h"
 #include "../ui/button.h"
+#include "../utils/position.h"
 #include "scene.h"
 #include "game.h"
 
@@ -16,8 +17,7 @@ void test()
 static struct button pause_buttons[] = {
 	(struct button) {
 		.text = "RESUME",
-		.x = WIDTH_PX / 2,
-		.y = 150,
+		.position = POS(WIDTH_PX / 2, 150, H_ALIGN_CENTER, V_ALIGN_TOP),
 		.callback = test,
 		.type = BUTTON_TYPE_STANDARD,
 	},
@@ -66,7 +66,11 @@ void draw_pause(int x, int y, int width, int height)
 
 	brightness = old_brightness;
 
-	draw_text("PAUSED", font_5x7_x4, ALIGN_CENTER, WIDTH_PX / 2, 50);
+	draw_text(
+		"PAUSED",
+		font_5x7_x4,
+		pos(WIDTH_PX / 2, 50, H_ALIGN_CENTER, V_ALIGN_MIDDLE)
+	);
 }
 
 void pause_onkeydown(enum key key)

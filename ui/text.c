@@ -47,21 +47,19 @@ void unload_fonts()
 	free(font_5x7_x4);
 }
 
-void draw_text(char *text, struct font *font, enum text_align align, int x, int y)
+void draw_text(char *text, struct font *font, struct position position)
 {
-	int text_x, text_width = strlen(text) * font->char_width + (strlen(text) - 1) * font->spacing;
-	switch (align) {
-		case ALIGN_LEFT:   text_x = x;                  break;
-		case ALIGN_CENTER: text_x = x - text_width / 2; break;
-		case ALIGN_RIGHT:  text_x = WIDTH_PX - x;       break;
-	}
+	int text_width = strlen(text) * font->char_width + (strlen(text) - 1) * font->spacing;
+	int x = get_x_from_position(position, text_width);
+	int y = get_y_from_position(position, font->char_height);
 
 	for (int i = 0; i < strlen(text); i++) {
 		int index = strchr(FONT_STRING, text[i]) - FONT_STRING; // TODO validate
 
 		draw_partial_sprite(
 			font->sprite,
-			text_x + i * font->char_width + (i-1) * font->spacing, y,
+			x + i * font->char_width + (i-1) * font->spacing,
+			y,
 			index * font->char_width, 0,
 			font->char_width, font->char_height
 		);

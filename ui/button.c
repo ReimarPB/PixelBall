@@ -7,6 +7,20 @@
 struct button buttons[MAX_BUTTON_AMOUNT];
 int button_amount;
 
+int get_button_width(enum button_type type)
+{
+	switch (type) {
+		case BUTTON_TYPE_STANDARD: return 200;
+	}
+}
+
+int get_button_height(enum button_type type)
+{
+	switch (type) {
+		case BUTTON_TYPE_STANDARD: return 45;
+	}
+}
+
 void clear_buttons()
 {
 	memset(&buttons, 0, sizeof(buttons));
@@ -23,12 +37,20 @@ void draw_buttons(int x, int y, int width, int height)
 	for (int i = 0; i < button_amount; i++) {
 		struct button button = buttons[i];
 
-		int x = button.x - 200 / 2;
+		int width = get_button_width(button.type);
+		int height = get_button_height(button.type);
 
-		draw_rect(rgb(255, 0, 0), x, button.y, 200, 45);
-		draw_rect(rgb(180, 0, 0), x, button.y + 45, 200, 5);
+		int btn_x = get_x_from_position(button.position, width);
+		int btn_y = get_y_from_position(button.position, height);
 
-		draw_text(button.text, font_5x7_x2, ALIGN_CENTER, button.x, button.y + 15);
+		draw_rect(rgb(255, 0, 0), btn_x, btn_y, 200, 45);
+		draw_rect(rgb(180, 0, 0), btn_x, btn_y + 45, 200, 5);
+
+		draw_text(
+			button.text,
+			font_5x7_x2,
+			pos(btn_x + width / 2, btn_y + height / 2, H_ALIGN_CENTER, V_ALIGN_MIDDLE)
+		);
 	}
 }
 

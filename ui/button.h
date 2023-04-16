@@ -1,3 +1,5 @@
+#include "../utils/position.h"
+
 #define MAX_BUTTON_AMOUNT 64
 
 enum button_type {
@@ -6,8 +8,7 @@ enum button_type {
 
 struct button {
 	char *text;
-	int x;
-	int y;
+	struct position position;
 	void (*callback)(void);
 	enum button_type type;
 };

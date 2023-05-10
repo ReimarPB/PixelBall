@@ -1,11 +1,12 @@
 #include <X11/Xlib.h>
 #include <X11/xpm.h>
+#include <X11/XKBlib.h>
 #include <X11/extensions/Xdbe.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include <unistd.h>
+#include <time.h>
 #include <pthread.h>
 
 #include "common.h"
@@ -148,10 +149,15 @@ void redraw_area(int x, int y, int width, int height)
 
 void *game_loop()
 {
+	struct timespec frame_time = {
+		.tv_sec = 0,
+		.tv_nsec = (1.0 / FPS) * 1000000000,
+	};
+
 	while (true) {
 		update();
 		XFlush(display);
-		usleep(1.0 / FPS * 1000000);
+		nanosleep(&frame_time, NULL);
 	}
 }
 
@@ -210,7 +216,7 @@ int main()
 	XkbSetDetectableAutoRepeat(display, true, false);
 
 	XEvent event;
-	KeySym last_key;
+	KeySym last_key = XK_VoidSymbol;
 	for (;;) {
 		XNextEvent(display, &event);
 
@@ -222,7 +228,7 @@ int main()
 				draw(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
 				break;
 			case KeyPress:
-				keysym = XKeycodeToKeysym(display, event.xkey.keycode, 0);
+				keysym = XkbKeycodeToKeysym(display, event.xkey.keycode, 0, 0);
 				if (keysym == last_key) break;
 
 				if ((key = translate_keycode(keysym)))
@@ -231,12 +237,12 @@ int main()
 				last_key = keysym;
 				break;
 			case KeyRelease:
-				keysym = XKeycodeToKeysym(display, event.xkey.keycode, 0);
+				keysym = XkbKeycodeToKeysym(display, event.xkey.keycode, 0, 0);
 
 				if ((key = translate_keycode(keysym)))
 					onkeyup(key);
 
-				last_key = NULL;
+				last_key = XK_VoidSymbol;
 				break;
 			case ClientMessage:
 				if (event.xclient.data.l[0] == wm_delete_window) goto exit;

@@ -52,6 +52,8 @@ void onkeydown(enum key key)
 		case SCENE_GAME:  game_onkeydown(key);  break;
 		case SCENE_PAUSE: pause_onkeydown(key); break;
 	}
+
+	buttons_onkeydown(key);
 }
 
 void onkeyup(enum key key)

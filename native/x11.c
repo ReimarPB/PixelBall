@@ -164,12 +164,14 @@ void *game_loop()
 enum key translate_keycode(KeySym keysym)
 {
 	switch (keysym) {
-		case XK_Left: return KEY_ARROW_LEFT;
-		case XK_Right: return KEY_ARROW_RIGHT;
-		case XK_Up: return KEY_ARROW_UP;
-		case XK_Down: return KEY_ARROW_DOWN;
+		case XK_Left:   return KEY_ARROW_LEFT;
+		case XK_Right:  return KEY_ARROW_RIGHT;
+		case XK_Up:     return KEY_ARROW_UP;
+		case XK_Down:   return KEY_ARROW_DOWN;
 		case XK_Escape: return KEY_ESCAPE;
-		default: return KEY_UNKNOWN;
+		case XK_Tab:    return KEY_TAB;
+		case XK_Return: return KEY_ENTER;
+		default:        return KEY_UNKNOWN;
 	}
 }
 

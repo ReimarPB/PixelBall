@@ -10,15 +10,16 @@
 bool ending_pause = false;
 float pause_brightness;
 
-void test()
+void unpause()
 {
+	ending_pause = true;
 }
 
 static struct button pause_buttons[] = {
 	(struct button) {
 		.text = "RESUME",
 		.position = POS(WIDTH_PX / 2, 150, H_ALIGN_CENTER, V_ALIGN_TOP),
-		.callback = test,
+		.callback = unpause,
 		.type = BUTTON_TYPE_STANDARD,
 	},
 };
@@ -76,6 +77,6 @@ void draw_pause(int x, int y, int width, int height)
 void pause_onkeydown(enum key key)
 {
 	if (key == KEY_ESCAPE) {
-		ending_pause = true;
+		unpause();
 	}
 }

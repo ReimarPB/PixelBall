@@ -13,6 +13,8 @@ enum key {
 	KEY_ARROW_UP,
 	KEY_ARROW_DOWN,
 	KEY_ESCAPE,
+	KEY_TAB,
+	KEY_ENTER,
 };
 
 struct color {

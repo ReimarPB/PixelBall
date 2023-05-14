@@ -2,8 +2,6 @@
 #include "../native/common.h"
 
 #define MAX_BUTTON_AMOUNT 64
-#define BUTTON_BORDER_SIZE 2
-#define BUTTON_SHADOW_SIZE 5
 
 enum button_type {
 	BUTTON_TYPE_STANDARD,
@@ -23,6 +21,8 @@ void init_buttons();
 void draw_buttons(int x, int y, int width, int height);
 
 void buttons_onkeydown(enum key key);
+
+void buttons_onkeyup(enum key key);
 
 void add_button(struct button button);
 

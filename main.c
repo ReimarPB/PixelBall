@@ -59,6 +59,8 @@ void onkeydown(enum key key)
 void onkeyup(enum key key)
 {
 	game_onkeyup(key);
+
+	buttons_onkeyup(key);
 }
 
 void unload()

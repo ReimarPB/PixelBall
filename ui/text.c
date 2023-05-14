@@ -58,7 +58,7 @@ void draw_text(char *text, struct font *font, struct position position)
 
 		draw_partial_sprite(
 			font->sprite,
-			x + i * font->char_width + (i-1) * font->spacing,
+			x + i * (font->char_width + font->spacing),
 			y,
 			index * font->char_width, 0,
 			font->char_width, font->char_height

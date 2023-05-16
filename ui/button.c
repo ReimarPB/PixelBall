@@ -94,7 +94,6 @@ void buttons_onkeydown(enum key key)
 		case KEY_ENTER:
 
 			if (focused_button >= 0) {
-				buttons[focused_button].callback();
 				button_pressed = true;
 				redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
 			}
@@ -109,6 +108,7 @@ void buttons_onkeydown(enum key key)
 void buttons_onkeyup(enum key key)
 {
 	if (key == KEY_ENTER) {
+		if (focused_button >= 0) buttons[focused_button].callback();
 		button_pressed = false;
 		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
 	}

@@ -22,12 +22,19 @@ static struct button pause_buttons[] = {
 		.callback = unpause,
 		.type = BUTTON_TYPE_STANDARD,
 	},
+	(struct button) {
+		.text = "MAIN MENU",
+		.position = POS(WIDTH_PX / 2, 220, H_ALIGN_CENTER, V_ALIGN_TOP),
+		.callback = unpause,
+		.type = BUTTON_TYPE_STANDARD,
+	},
 };
 
 void pause()
 {
 	scene = SCENE_PAUSE;
 	add_button(pause_buttons[0]);
+	add_button(pause_buttons[1]);
 	pause_brightness = 1.0;
 }
 
@@ -74,7 +81,7 @@ void draw_pause(int x, int y, int width, int height)
 	);
 }
 
-void pause_onkeydown(enum key key)
+void pause_onkeydown(enum key key, bool ctrl, bool alt, bool shift)
 {
 	if (key == KEY_ESCAPE) {
 		unpause();

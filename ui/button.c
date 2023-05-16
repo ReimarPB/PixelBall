@@ -79,19 +79,24 @@ void draw_buttons(int x, int y, int width, int height)
 	}
 }
 
-void buttons_onkeydown(enum key key)
+void buttons_onkeydown(enum key key, bool ctrl, bool alt, bool shift)
 {
 	switch (key) {
 		case KEY_TAB:
 
-			focused_button++;
-			if (focused_button >= button_amount)
-				focused_button = -1;
+			if (shift) {
+				focused_button--;
+				if (focused_button < -1) focused_button = button_amount - 1;
+			} else {
+				focused_button++;
+				if (focused_button >= button_amount) focused_button = -1;
+			}
 
 			redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
 
 			break;
 		case KEY_ENTER:
+		case KEY_SPACE:
 
 			if (focused_button >= 0) {
 				button_pressed = true;
@@ -105,12 +110,21 @@ void buttons_onkeydown(enum key key)
 	}
 }
 
-void buttons_onkeyup(enum key key)
+void buttons_onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 {
-	if (key == KEY_ENTER) {
-		if (focused_button >= 0) buttons[focused_button].callback();
-		button_pressed = false;
-		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+	switch (key) {
+		case KEY_ENTER:
+		case KEY_SPACE:
+
+			if (focused_button >= 0)
+				buttons[focused_button].callback();
+
+			button_pressed = false;
+			redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+
+			break;
+		default:
+			break;
 	}
 }
 

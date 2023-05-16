@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdbool.h>
 #include <time.h>
 
 #include "globals.h"
@@ -46,21 +47,23 @@ void update()
 	}
 }
 
-void onkeydown(enum key key)
+void onkeydown(enum key key, bool ctrl, bool alt, bool shift)
 {
 	switch (scene) {
-		case SCENE_GAME:  game_onkeydown(key);  break;
-		case SCENE_PAUSE: pause_onkeydown(key); break;
+		case SCENE_GAME:  game_onkeydown(key, ctrl, alt, shift);  break;
+		case SCENE_PAUSE: pause_onkeydown(key, ctrl, alt, shift); break;
 	}
 
-	buttons_onkeydown(key);
+	buttons_onkeydown(key, ctrl, alt, shift);
 }
 
-void onkeyup(enum key key)
+void onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 {
-	game_onkeyup(key);
+	switch (scene) {
+		case SCENE_GAME: game_onkeyup(key, ctrl, alt, shift); break;
+	}
 
-	buttons_onkeyup(key);
+	buttons_onkeyup(key, ctrl, alt, shift);
 }
 
 void unload()

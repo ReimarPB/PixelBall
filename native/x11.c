@@ -21,8 +21,8 @@ bool has_back_buffer = false;
 void init();
 void draw(int x, int y, int width, int height);
 void update();
-void onkeydown(enum key key);
-void onkeyup(enum key key);
+void onkeydown(enum key key, bool ctrl, bool alt, bool shift);
+void onkeyup(enum key key, bool ctrl, bool alt, bool shift);
 void unload();
 
 unsigned long parse_color(struct color color)
@@ -171,6 +171,7 @@ enum key translate_keycode(KeySym keysym)
 		case XK_Escape: return KEY_ESCAPE;
 		case XK_Tab:    return KEY_TAB;
 		case XK_Return: return KEY_ENTER;
+		case XK_space:  return KEY_SPACE;
 		default:        return KEY_UNKNOWN;
 	}
 }
@@ -234,7 +235,7 @@ int main()
 				if (keysym == last_key) break;
 
 				if ((key = translate_keycode(keysym)))
-					onkeydown(key);
+					onkeydown(key, event.xkey.state & 4, event.xkey.state & 8, event.xkey.state & 1);
 
 				last_key = keysym;
 				break;
@@ -242,7 +243,7 @@ int main()
 				keysym = XkbKeycodeToKeysym(display, event.xkey.keycode, 0, 0);
 
 				if ((key = translate_keycode(keysym)))
-					onkeyup(key);
+					onkeyup(key, event.xkey.state & 4, event.xkey.state & 8, event.xkey.state & 1);
 
 				last_key = XK_VoidSymbol;
 				break;

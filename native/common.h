@@ -15,6 +15,7 @@ enum key {
 	KEY_ESCAPE,
 	KEY_TAB,
 	KEY_ENTER,
+	KEY_SPACE,
 };
 
 struct color {

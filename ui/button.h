@@ -20,9 +20,9 @@ void init_buttons();
 
 void draw_buttons(int x, int y, int width, int height);
 
-void buttons_onkeydown(enum key key);
+void buttons_onkeydown(enum key key, bool ctrl, bool alt, bool shift);
 
-void buttons_onkeyup(enum key key);
+void buttons_onkeyup(enum key key, bool ctrl, bool alt, bool shift);
 
 void add_button(struct button button);
 

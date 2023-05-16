@@ -92,7 +92,7 @@ void draw_game(int x, int y, int width, int height)
 	draw_particles(x, y, width, height);
 }
 
-void game_onkeydown(enum key key)
+void game_onkeydown(enum key key, bool ctrl, bool alt, bool shift)
 {
 	switch (key) {
 		case KEY_ARROW_LEFT:
@@ -107,7 +107,7 @@ void game_onkeydown(enum key key)
 	}
 }
 
-void game_onkeyup(enum key key)
+void game_onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 {
 	switch (key) {
 		case KEY_ARROW_LEFT:

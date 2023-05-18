@@ -52,6 +52,24 @@ int get_button_from_coords(int x, int y)
 	return -1;
 }
 
+void redraw_button(int button_index)
+{
+	if (button_index < 0) return;
+
+	struct button button = buttons[button_index];
+
+	int width = get_button_width(button.type);
+	int height = get_button_height(button.type);
+
+	int x = get_x_from_position(button.position, width) - BUTTON_BORDER_SIZE;
+	int y = get_y_from_position(button.position, height) - BUTTON_BORDER_SIZE;
+
+	width += BUTTON_BORDER_SIZE * 2;
+	height += BUTTON_BORDER_SIZE * 2;
+
+	redraw_area(x, y, width, height);
+}
+
 void clear_buttons()
 {
 	memset(&buttons, 0, sizeof(buttons));
@@ -108,6 +126,7 @@ void buttons_onkeydown(enum key key, bool ctrl, bool alt, bool shift)
 {
 	switch (key) {
 		case KEY_TAB:
+			redraw_button(focused_button);
 
 			if (shift) {
 				focused_button--;
@@ -117,15 +136,14 @@ void buttons_onkeydown(enum key key, bool ctrl, bool alt, bool shift)
 				if (focused_button >= button_amount) focused_button = -1;
 			}
 
-			redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
-
+			redraw_button(focused_button);
 			break;
 		case KEY_ENTER:
 		case KEY_SPACE:
 
 			if (focused_button >= 0) {
 				button_pressed = true;
-				redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+				redraw_button(focused_button);
 			}
 
 			break;
@@ -145,7 +163,7 @@ void buttons_onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 				buttons[focused_button].callback();
 
 			button_pressed = false;
-			redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+			redraw_button(focused_button);
 
 			break;
 		default:
@@ -155,9 +173,12 @@ void buttons_onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 
 void buttons_onmousemove(int x, int y)
 {
+	int old_focused_button = focused_button;
+
 	focused_button = get_button_from_coords(x, y);
 
-	redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+	redraw_button(old_focused_button);
+	redraw_button(focused_button);
 }
 
 void buttons_onmousedown(int mouse_btn, int x, int y)
@@ -167,7 +188,7 @@ void buttons_onmousedown(int mouse_btn, int x, int y)
 	if (get_button_from_coords(x, y) == focused_button && focused_button >= 0) {
 		button_pressed = true;
 
-		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+		redraw_button(focused_button);
 	}
 }
 
@@ -178,7 +199,7 @@ void buttons_onmouseup(int mouse_btn, int x, int y)
 	if (get_button_from_coords(x, y) == focused_button && focused_button >= 0 && button_pressed) {
 		buttons[focused_button].callback();
 
-		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+		redraw_button(focused_button);
 	}
 
 	button_pressed = false;

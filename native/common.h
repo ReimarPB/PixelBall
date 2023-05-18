@@ -5,6 +5,7 @@
 
 // TODO check platform
 #include "x11.h"
+#include "../globals.h"
 
 enum key {
 	KEY_UNKNOWN,
@@ -45,6 +46,8 @@ void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite
 void draw_rect(struct color color, int x, int y, int width, int height);
 
 void redraw_area(int x, int y, int width, int height);
+
+struct point get_mouse_coords();
 
 #endif
 

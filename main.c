@@ -69,6 +69,16 @@ void onmousemove(int x, int y)
 	buttons_onmousemove(x, y);
 }
 
+void onmousedown(int btn, int x, int y)
+{
+	buttons_onmousedown(btn, x, y);
+}
+
+void onmouseup(int btn, int x, int y)
+{
+	buttons_onmouseup(btn, x, y);
+}
+
 void unload()
 {
 	unload_sprite(icon);

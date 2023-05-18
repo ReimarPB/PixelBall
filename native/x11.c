@@ -12,20 +12,13 @@
 #include "common.h"
 #include "x11.h"
 #include "../globals.h"
+#include "../main.h"
 
 Display *display;
 Window window;
 XdbeBackBuffer back_buffer;
 bool has_back_buffer = false;
 bool has_drawn_to_screen = false;
-
-void init();
-void draw(int x, int y, int width, int height);
-void update();
-void onkeydown(enum key key, bool ctrl, bool alt, bool shift);
-void onkeyup(enum key key, bool ctrl, bool alt, bool shift);
-void onmousemove(int x, int y);
-void unload();
 
 unsigned long parse_color(struct color color)
 {
@@ -155,6 +148,18 @@ void redraw_area(int x, int y, int width, int height)
 	XSendEvent(display, window, false, ExposureMask, &event);
 }
 
+struct point get_mouse_coords()
+{
+	Window root, child;
+	int root_x, root_y, win_x, win_y;
+	unsigned int mask;
+
+	if (XQueryPointer(display, window, &root, &child, &root_x, &root_y, &win_x, &win_y, &mask))
+		return (struct point) { win_x, win_y };
+	else
+		return (struct point) { -1, -1 };
+}
+
 void *game_loop()
 {
 	struct timespec frame_time = {
@@ -211,7 +216,7 @@ int main()
 
 	init();
 
-	XSelectInput(display, window, ExposureMask | KeyPressMask | KeyReleaseMask | PointerMotionMask);
+	XSelectInput(display, window, ExposureMask | KeyPressMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
 
 	Atom wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", false);
 	XSetWMProtocols(display, window, &wm_delete_window, 1);
@@ -258,6 +263,12 @@ int main()
 				break;
 			case MotionNotify:
 				onmousemove(event.xmotion.x, event.xmotion.y);
+				break;
+			case ButtonPress:
+				onmousedown(event.xbutton.button, event.xbutton.x, event.xbutton.y);
+				break;
+			case ButtonRelease:
+				onmouseup(event.xbutton.button, event.xbutton.x, event.xbutton.y);
 				break;
 			case ClientMessage:
 				if (event.xclient.data.l[0] == wm_delete_window) goto exit;

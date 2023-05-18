@@ -27,6 +27,31 @@ int get_button_height(enum button_type type)
 	}
 }
 
+bool button_collides_with(struct button button, int x, int y)
+{
+	int width = get_button_width(button.type);
+	int height = get_button_height(button.type);
+
+	int btn_x = get_x_from_position(button.position, width);
+	int btn_y = get_y_from_position(button.position, height);
+
+	return
+		x >= btn_x && x <= btn_x + width &&
+		y >= btn_y && y <= btn_y + height;
+}
+
+// Returns the index or -1
+int get_button_from_coords(int x, int y)
+{
+	for (int i = 0; i < button_amount; i++) {
+		struct button button = buttons[i];
+
+		if (button_collides_with(button, x, y)) return i;
+	}
+
+	return -1;
+}
+
 void clear_buttons()
 {
 	memset(&buttons, 0, sizeof(buttons));
@@ -130,30 +155,43 @@ void buttons_onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 
 void buttons_onmousemove(int x, int y)
 {
-	focused_button = -1;
-
-	for (int i = 0; i < button_amount; i++) {
-		struct button button = buttons[i];
-
-		int width = get_button_width(button.type);
-		int height = get_button_height(button.type);
-
-		int btn_x = get_x_from_position(button.position, width);
-		int btn_y = get_y_from_position(button.position, height);
-
-		if (
-			x >= btn_x && x <= btn_x + width &&
-			y >= btn_y && y <= btn_y + height
-		) {
-			focused_button = i;
-		}
-	}
+	focused_button = get_button_from_coords(x, y);
 
 	redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+}
+
+void buttons_onmousedown(int mouse_btn, int x, int y)
+{
+	if (mouse_btn != 1) return;
+
+	if (get_button_from_coords(x, y) == focused_button && focused_button >= 0) {
+		button_pressed = true;
+
+		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+	}
+}
+
+void buttons_onmouseup(int mouse_btn, int x, int y)
+{
+	if (mouse_btn != 1) return;
+
+	if (get_button_from_coords(x, y) == focused_button && focused_button >= 0 && button_pressed) {
+		buttons[focused_button].callback();
+
+		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+	}
+
+	button_pressed = false;
 }
 
 void add_button(struct button button)
 {
 	buttons[button_amount++] = button;
+
+	// Check if mouse is already over button
+	struct point mouse_coords = get_mouse_coords();
+
+	if (button_collides_with(button, mouse_coords.x, mouse_coords.y))
+		focused_button = button_amount - 1;
 }
 

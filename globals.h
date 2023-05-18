@@ -16,5 +16,10 @@ enum axis {
 	Y_AXIS,
 };
 
+struct point {
+	int x;
+	int y;
+};
+
 #endif
 

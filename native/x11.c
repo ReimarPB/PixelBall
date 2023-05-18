@@ -37,14 +37,13 @@ void set_window_title(char *title)
 
 void set_window_icon(sprite_t icon)
 {
-	XWMHints *hints = XAllocWMHints();
-	hints->flags = IconPixmapHint | IconMaskHint;
-	hints->icon_pixmap = icon.pixmap;
-	hints->icon_mask = icon.shapemask;
+	XWMHints hints = {
+		.flags = IconPixmapHint | IconMaskHint,
+		.icon_pixmap = icon.pixmap,
+		.icon_mask = icon.shapemask,
+	};
 
-	XSetWMHints(display, window, hints);
-
-	XFree(hints);
+	XSetWMHints(display, window, &hints);
 }
 
 sprite_t load_sprite(sprite_identifier_t sprite)

@@ -17,12 +17,14 @@ Display *display;
 Window window;
 XdbeBackBuffer back_buffer;
 bool has_back_buffer = false;
+bool has_drawn_to_screen = false;
 
 void init();
 void draw(int x, int y, int width, int height);
 void update();
 void onkeydown(enum key key, bool ctrl, bool alt, bool shift);
 void onkeyup(enum key key, bool ctrl, bool alt, bool shift);
+void onmousemove(int x, int y);
 void unload();
 
 unsigned long parse_color(struct color color)
@@ -106,6 +108,8 @@ void draw_sprite(sprite_t sprite, int x, int y)
 
 	XCopyArea(display, sprite.pixmap, back_buffer, gc, 0, 0, sprite.width, sprite.height, x, y);
 	XFreeGC(display, gc);
+
+	has_drawn_to_screen = true;
 }
 
 void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite_y, int sprite_width, int sprite_height)
@@ -120,6 +124,8 @@ void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite
 
 	XCopyArea(display, sprite.pixmap, back_buffer, gc, sprite_x, sprite_y, sprite_width, sprite_height, x, y);
 	XFreeGC(display, gc);
+
+	has_drawn_to_screen = true;
 }
 
 void draw_rect(struct color color, int x, int y, int width, int height)
@@ -132,6 +138,8 @@ void draw_rect(struct color color, int x, int y, int width, int height)
 	XFillRectangle(display, back_buffer, gc, x, y, width, height);
 
 	XFreeGC(display, gc);
+
+	has_drawn_to_screen = true;
 }
 
 void redraw_area(int x, int y, int width, int height)
@@ -203,7 +211,7 @@ int main()
 
 	init();
 
-	XSelectInput(display, window, ExposureMask | KeyPressMask | KeyReleaseMask);
+	XSelectInput(display, window, ExposureMask | KeyPressMask | KeyReleaseMask | PointerMotionMask);
 
 	Atom wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", false);
 	XSetWMProtocols(display, window, &wm_delete_window, 1);
@@ -223,6 +231,7 @@ int main()
 	for (;;) {
 		XNextEvent(display, &event);
 
+		has_drawn_to_screen = false;
 		enum key key;
 		KeySym keysym;
 		switch (event.type) {
@@ -247,11 +256,16 @@ int main()
 
 				last_key = XK_VoidSymbol;
 				break;
+			case MotionNotify:
+				onmousemove(event.xmotion.x, event.xmotion.y);
+				break;
 			case ClientMessage:
 				if (event.xclient.data.l[0] == wm_delete_window) goto exit;
 		}
 
-		if (has_back_buffer) XdbeSwapBuffers(display, &swap_info, 1);
+		if (has_back_buffer && has_drawn_to_screen) {
+			XdbeSwapBuffers(display, &swap_info, 1);
+		}
 	}
 
 exit:

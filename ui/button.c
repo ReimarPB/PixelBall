@@ -128,6 +128,30 @@ void buttons_onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 	}
 }
 
+void buttons_onmousemove(int x, int y)
+{
+	focused_button = -1;
+
+	for (int i = 0; i < button_amount; i++) {
+		struct button button = buttons[i];
+
+		int width = get_button_width(button.type);
+		int height = get_button_height(button.type);
+
+		int btn_x = get_x_from_position(button.position, width);
+		int btn_y = get_y_from_position(button.position, height);
+
+		if (
+			x >= btn_x && x <= btn_x + width &&
+			y >= btn_y && y <= btn_y + height
+		) {
+			focused_button = i;
+		}
+	}
+
+	redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+}
+
 void add_button(struct button button)
 {
 	buttons[button_amount++] = button;

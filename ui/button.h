@@ -24,6 +24,8 @@ void buttons_onkeydown(enum key key, bool ctrl, bool alt, bool shift);
 
 void buttons_onkeyup(enum key key, bool ctrl, bool alt, bool shift);
 
+void buttons_onmousemove(int x, int y);
+
 void add_button(struct button button);
 
 void clear_buttons();

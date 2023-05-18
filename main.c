@@ -59,11 +59,14 @@ void onkeydown(enum key key, bool ctrl, bool alt, bool shift)
 
 void onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 {
-	switch (scene) {
-		case SCENE_GAME: game_onkeyup(key, ctrl, alt, shift); break;
-	}
+	game_onkeyup(key, ctrl, alt, shift);
 
 	buttons_onkeyup(key, ctrl, alt, shift);
+}
+
+void onmousemove(int x, int y)
+{
+	buttons_onmousemove(x, y);
 }
 
 void unload()

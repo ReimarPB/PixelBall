@@ -215,6 +215,16 @@ int main()
 
 	init();
 
+	// Disable resizing
+	XSizeHints size_hints = {
+		.flags = PMinSize | PMaxSize,
+		.min_width = WIDTH_PX,
+		.max_width = WIDTH_PX,
+		.min_height = HEIGHT_PX,
+		.max_height = HEIGHT_PX,
+	};
+	XSetWMNormalHints(display, window, &size_hints);
+
 	XSelectInput(display, window, ExposureMask | KeyPressMask | KeyReleaseMask | PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
 
 	Atom wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", false);

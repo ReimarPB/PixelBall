@@ -30,7 +30,7 @@ int get_button_height(enum button_type type)
 bool button_collides_with(struct button button, int x, int y)
 {
 	int width = get_button_width(button.type);
-	int height = get_button_height(button.type);
+	int height = get_button_height(button.type) + BUTTON_SHADOW_SIZE;
 
 	int btn_x = get_x_from_position(button.position, width);
 	int btn_y = get_y_from_position(button.position, height);
@@ -65,7 +65,7 @@ void redraw_button(int button_index)
 	int y = get_y_from_position(button.position, height) - BUTTON_BORDER_SIZE;
 
 	width += BUTTON_BORDER_SIZE * 2;
-	height += BUTTON_BORDER_SIZE * 2;
+	height += BUTTON_BORDER_SIZE * 2 + BUTTON_SHADOW_SIZE;
 
 	redraw_area(x, y, width, height);
 }

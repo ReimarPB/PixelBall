@@ -15,6 +15,11 @@ void unpause()
 	ending_pause = true;
 }
 
+void go_to_menu()
+{
+	change_scene(SCENE_MAIN_MENU);
+}
+
 static struct button pause_buttons[] = {
 	(struct button) {
 		.text = "RESUME",
@@ -25,14 +30,14 @@ static struct button pause_buttons[] = {
 	(struct button) {
 		.text = "MAIN MENU",
 		.position = POS(WIDTH_PX / 2, 220, H_ALIGN_CENTER, V_ALIGN_TOP),
-		.callback = unpause,
+		.callback = go_to_menu,
 		.type = BUTTON_TYPE_STANDARD,
 	},
 };
 
 void pause()
 {
-	scene = SCENE_PAUSE;
+	change_scene(SCENE_PAUSE);
 	add_button(pause_buttons[0]);
 	add_button(pause_buttons[1]);
 	pause_brightness = 1.0;
@@ -50,7 +55,7 @@ void update_pause()
 			pause_brightness += 0.1;
 		} else {
 			clear_buttons();
-			scene = SCENE_GAME;
+			change_scene(SCENE_GAME);
 			ending_pause = false;
 		}
 

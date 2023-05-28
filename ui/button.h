@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #include "../utils/position.h"
 #include "../native/common.h"
 

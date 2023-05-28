@@ -6,6 +6,7 @@
 #include "scenes/scene.h"
 #include "scenes/game.h"
 #include "scenes/pause.h"
+#include "scenes/main_menu.h"
 #include "entities/particle.h"
 #include "native/x11.h"
 #include "native/common.h"
@@ -32,8 +33,9 @@ void init()
 void draw(int x, int y, int width, int height)
 {
 	switch (scene) {
-		case SCENE_GAME:  draw_game(x, y, width, height);  break;
-		case SCENE_PAUSE: draw_pause(x, y, width, height); break;
+		case SCENE_GAME:       draw_game(x, y, width, height);      break;
+		case SCENE_PAUSE:      draw_pause(x, y, width, height);     break;
+		case SCENE_MAIN_MENU:  draw_main_menu(x, y, width, height); break;
 	}
 
 	draw_buttons(x, y, width, height);

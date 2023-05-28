@@ -188,7 +188,7 @@ enum key translate_keycode(KeySym keysym)
 	}
 }
 
-int main()
+int main(int argc, char **argv)
 {
 	XInitThreads();
 
@@ -250,7 +250,10 @@ int main()
 		KeySym keysym;
 		switch (event.type) {
 			case Expose:
+				if (event.xexpose.count != 0) break;
+
 				if (!event.xexpose.x && !event.xexpose.y && !event.xexpose.width && !event.xexpose.height) break;
+
 				draw(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
 				break;
 			case KeyPress:

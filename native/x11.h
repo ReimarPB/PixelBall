@@ -21,6 +21,9 @@
 #include "../assets/font_5x7_x4.xpm"
 #define SPRITE_FONT_5x7_x4 font_5x7_x4_xpm
 
+#include "../assets/logo.xpm"
+#define SPRITE_LOGO logo_xpm
+
 typedef struct sprite {
 	Pixmap pixmap;
 	Pixmap shapemask;

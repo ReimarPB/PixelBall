@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "../native/common.h"
+#include "../ui/button.h"
 #include "../globals.h"
 #include "../main.h"
 #include "scene.h"
@@ -18,7 +19,7 @@ void transition_to_scene(enum scene new)
 {
 	old_scene = scene;
 	new_scene = new;
-	change_scene(SCENE_TRANSITION);
+	scene = SCENE_TRANSITION;
 	progress = HEIGHT_PX;
 }
 
@@ -26,7 +27,11 @@ void update_transition()
 {
 	progress -= TRANSITION_SPEED;
 
-	if (progress == 0) init_scene(new_scene);
+	if (progress == 0) {
+		clear_buttons();
+		init_scene(new_scene);
+	}
+
 	if (progress == -HEIGHT_PX) scene = new_scene;
 
 	redraw_area(0, abs(progress + TRANSITION_SPEED), WIDTH_PX, TRANSITION_SPEED);

@@ -37,7 +37,7 @@ void draw(int x, int y, int width, int height)
 		case SCENE_GAME:       draw_game(x, y, width, height);       break;
 		case SCENE_PAUSE:      draw_pause(x, y, width, height);      break;
 		case SCENE_MAIN_MENU:  draw_main_menu(x, y, width, height);  break;
-		case SCENE_TRANSITION: draw_transition(x, y, width, height); break;
+		case SCENE_TRANSITION: draw_transition(x, y, width, height); return; // don't draw buttons on top of transition
 	}
 
 	draw_buttons(x, y, width, height);

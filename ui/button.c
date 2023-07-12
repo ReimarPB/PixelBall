@@ -88,36 +88,44 @@ void draw_buttons(int x, int y, int width, int height)
 	for (int i = 0; i < button_amount; i++) {
 		struct button button = buttons[i];
 
-		int width = get_button_width(button.type);
-		int height = get_button_height(button.type);
-		int full_height = height + BUTTON_SHADOW_SIZE;
+		int btn_width = get_button_width(button.type);
+		int btn_height = get_button_height(button.type);
+		int full_height = btn_height + BUTTON_SHADOW_SIZE;
 
-		int btn_x = get_x_from_position(button.position, width);
-		int btn_y = get_y_from_position(button.position, height);
+		int btn_x = get_x_from_position(button.position, btn_width);
+		int btn_y = get_y_from_position(button.position, btn_height);
 		int y_offset = focused_button == i && button_pressed ? BUTTON_SHADOW_SIZE : 0;
+
+		// Check if it needs to be drawn
+		if (
+			(btn_x + btn_width < x || btn_x > x + width) &&
+			(btn_y + btn_height < y || btn_y > y + height)
+		) {
+			continue;
+		}
 
 		// Draw button
 		if (focused_button == i && button_pressed) {
-			draw_rect(rgb(255, 0, 0), btn_x, y_offset + btn_y, width, height);
+			draw_rect(rgb(255, 0, 0), btn_x, y_offset + btn_y, btn_width, btn_height);
 		} else {
-			draw_rect(rgb(255, 0, 0), btn_x, btn_y, width, height);
-			draw_rect(rgb(180, 0, 0), btn_x, btn_y + height, width, BUTTON_SHADOW_SIZE);
+			draw_rect(rgb(255, 0, 0), btn_x, btn_y, btn_width, btn_height);
+			draw_rect(rgb(180, 0, 0), btn_x, btn_y + btn_height, btn_width, BUTTON_SHADOW_SIZE);
 		}
 
 		// Draw border
 		if (focused_button == i) {
 			struct color border_color = rgb(255, 255, 255);
 
-			draw_rect(border_color, btn_x - BUTTON_BORDER_SIZE, y_offset + btn_y - BUTTON_BORDER_SIZE, width + BUTTON_BORDER_SIZE * 2, BUTTON_BORDER_SIZE);
-			draw_rect(border_color, btn_x - BUTTON_BORDER_SIZE, btn_y + full_height,                   width + BUTTON_BORDER_SIZE * 2, BUTTON_BORDER_SIZE);
-			draw_rect(border_color, btn_x - BUTTON_BORDER_SIZE, y_offset + btn_y,                      BUTTON_BORDER_SIZE,             full_height - y_offset);
-			draw_rect(border_color, btn_x + width,              y_offset + btn_y,                      BUTTON_BORDER_SIZE,             full_height - y_offset);
+			draw_rect(border_color, btn_x - BUTTON_BORDER_SIZE, y_offset + btn_y - BUTTON_BORDER_SIZE, btn_width + BUTTON_BORDER_SIZE * 2, BUTTON_BORDER_SIZE);
+			draw_rect(border_color, btn_x - BUTTON_BORDER_SIZE, btn_y + full_height,                   btn_width + BUTTON_BORDER_SIZE * 2, BUTTON_BORDER_SIZE);
+			draw_rect(border_color, btn_x - BUTTON_BORDER_SIZE, y_offset + btn_y,                      BUTTON_BORDER_SIZE,                 full_height - y_offset);
+			draw_rect(border_color, btn_x + btn_width,          y_offset + btn_y,                      BUTTON_BORDER_SIZE,                 full_height - y_offset);
 		}
 
 		draw_text(
 			button.text,
 			font_5x7_x2,
-			pos(btn_x + width / 2, y_offset + btn_y + height / 2, H_ALIGN_CENTER, V_ALIGN_MIDDLE)
+			pos(btn_x + btn_width / 2, y_offset + btn_y + btn_height / 2, H_ALIGN_CENTER, V_ALIGN_MIDDLE)
 		);
 	}
 }

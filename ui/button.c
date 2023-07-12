@@ -109,7 +109,7 @@ void draw_buttons(int x, int y, int width, int height)
 			struct color border_color = rgb(255, 255, 255);
 
 			draw_rect(border_color, btn_x - BUTTON_BORDER_SIZE, y_offset + btn_y - BUTTON_BORDER_SIZE, width + BUTTON_BORDER_SIZE * 2, BUTTON_BORDER_SIZE);
-			draw_rect(border_color, btn_x - BUTTON_BORDER_SIZE, btn_y + full_height,        width + BUTTON_BORDER_SIZE * 2, BUTTON_BORDER_SIZE);
+			draw_rect(border_color, btn_x - BUTTON_BORDER_SIZE, btn_y + full_height,                   width + BUTTON_BORDER_SIZE * 2, BUTTON_BORDER_SIZE);
 			draw_rect(border_color, btn_x - BUTTON_BORDER_SIZE, y_offset + btn_y,                      BUTTON_BORDER_SIZE,             full_height - y_offset);
 			draw_rect(border_color, btn_x + width,              y_offset + btn_y,                      BUTTON_BORDER_SIZE,             full_height - y_offset);
 		}

@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #include "native/common.h"
 
 void init();

@@ -5,6 +5,7 @@
 #include "../ui/button.h"
 #include "../utils/position.h"
 #include "scene.h"
+#include "transition.h"
 #include "game.h"
 
 bool ending_pause = false;
@@ -17,7 +18,7 @@ void unpause()
 
 void go_to_menu()
 {
-	change_scene(SCENE_MAIN_MENU);
+	transition_to_scene(SCENE_MAIN_MENU);
 }
 
 static struct button pause_buttons[] = {

@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "../native/common.h"
 #include "../globals.h"
 #include "../main.h"
@@ -27,7 +29,7 @@ void update_transition()
 	if (progress == 0) init_scene(new_scene);
 	if (progress == -HEIGHT_PX) scene = new_scene;
 
-	redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+	redraw_area(0, abs(progress + TRANSITION_SPEED), WIDTH_PX, TRANSITION_SPEED);
 }
 
 void draw_transition(int x, int y, int width, int height)

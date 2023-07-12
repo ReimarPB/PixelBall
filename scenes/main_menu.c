@@ -1,12 +1,12 @@
 #include "../native/common.h"
 #include "../ui/button.h"
-#include "scene.h"
+#include "transition.h"
 
 sprite_t logo;
 
 void play()
 {
-	change_scene(SCENE_GAME);
+	transition_to_scene(SCENE_GAME);
 }
 
 static struct button play_button = {

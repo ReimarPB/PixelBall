@@ -21,6 +21,15 @@ int progress;
 
 int chunk_offsets[TRANSITION_CHUNK_AMOUNT];
 
+void generate_offsets()
+{
+	for (int i = 0; i < TRANSITION_CHUNK_AMOUNT; i++) {
+		do {
+			chunk_offsets[i] = rand() % TRANSITION_CHUNK_MAX_HEIGHT;
+		} while (i > 0 && abs(chunk_offsets[i] - chunk_offsets[i-1]) < 10); // Ensure enough height difference between chunks
+	}
+}
+
 void transition_to_scene(enum scene new)
 {
 	old_scene = scene;
@@ -30,12 +39,7 @@ void transition_to_scene(enum scene new)
 
 	progress = TRANSITION_FULL_HEIGHT;
 
-	// Generate offsets
-	for (int i = 0; i < TRANSITION_CHUNK_AMOUNT; i++) {
-		do {
-			chunk_offsets[i] = rand() % TRANSITION_CHUNK_MAX_HEIGHT;
-		} while (i > 0 && abs(chunk_offsets[i] - chunk_offsets[i-1]) < 10); // Ensure enough height difference between chunks
-	}
+	generate_offsets();
 }
 
 void update_transition()
@@ -45,6 +49,7 @@ void update_transition()
 	if (progress == 0) {
 		clear_buttons();
 		init_scene(new_scene);
+		generate_offsets();
 	}
 
 	if (progress == -TRANSITION_FULL_HEIGHT) {

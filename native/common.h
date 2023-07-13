@@ -35,6 +35,10 @@ void set_window_title(char *title);
 
 void set_window_icon(sprite_t icon);
 
+int get_sprite_width(sprite_t sprite);
+
+int get_sprite_height(sprite_t sprite);
+
 sprite_t load_sprite(sprite_identifier_t sprite);
 
 void unload_sprite(sprite_t sprite);

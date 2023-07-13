@@ -30,7 +30,6 @@ void draw_main_menu(int x, int y, int width, int height)
 		x, y, width, height
 	);
 
-	// TODO dont hardcode width
-	draw_sprite(logo, WIDTH_PX / 2 - 396 / 2, 50);
+	draw_sprite(logo, WIDTH_PX / 2 - get_sprite_width(logo) / 2, 50);
 }
 

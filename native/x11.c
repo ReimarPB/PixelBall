@@ -20,6 +20,16 @@ XdbeBackBuffer back_buffer;
 bool has_back_buffer = false;
 bool has_drawn_to_screen = false;
 
+int get_sprite_width(sprite_t sprite)
+{
+	return sprite.width;
+}
+
+int get_sprite_height(sprite_t sprite)
+{
+	return sprite.height;
+}
+
 unsigned long parse_color(struct color color)
 {
 	return (color.red << 16) + (color.green << 8) + color.blue;

@@ -6,12 +6,24 @@
 #include "ball.h"
 #include "block.h"
 
+sprite_t sprite_ball;
+
 bool handle_collision(struct ball *ball, int block_x, int block_y, enum axis axis)
 {
 	if (block_x < 0 || block_x >= WIDTH_BLOCKS || block_y < 0 || block_y >= HEIGHT_BLOCKS) return false;
 
 	struct block *block = level[block_y][block_x];
 	return block != NULL && block->collision_handler(ball, *block, block_x, block_y, axis);
+}
+
+void init_ball()
+{
+	sprite_ball = load_sprite(SPRITE_BALL);
+}
+
+void unload_ball()
+{
+	unload_sprite(sprite_ball);
 }
 
 void update_ball(struct ball *ball)
@@ -83,8 +95,6 @@ void update_ball(struct ball *ball)
 
 void draw_ball(struct ball ball)
 {
-	sprite_t sprite_ball = load_sprite(SPRITE_BALL);
 	draw_sprite(sprite_ball, (int)ball.x, (int)ball.y);
-	unload_sprite(sprite_ball);
 }
 

@@ -13,6 +13,10 @@ struct ball {
 	bool going_right;
 };
 
+void init_ball();
+
+void unload_ball();
+
 void update_ball(struct ball *ball);
 
 void draw_ball(struct ball ball);

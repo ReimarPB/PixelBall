@@ -3,32 +3,38 @@
 #include <time.h>
 
 #include "globals.h"
+#include "main.h"
 #include "scenes/scene.h"
 #include "scenes/game.h"
 #include "scenes/pause.h"
 #include "scenes/main_menu.h"
 #include "scenes/transition.h"
 #include "entities/particle.h"
+#include "entities/block.h"
+#include "entities/ball.h"
 #include "native/x11.h"
 #include "native/common.h"
 #include "ui/text.h"
 #include "ui/button.h"
 
 enum scene scene = SCENE_GAME;
-sprite_t icon;
+sprite_t sprite_icon;
 
 void init()
 {
 	srand(time(0));
 
 	init_game();
+	init_blocks();
+	init_ball();
 	init_fonts();
 	init_buttons();
 
 	set_window_title("Pixel Ball");
 
-	icon = load_sprite(SPRITE_ICON);
-	set_window_icon(icon);
+	sprite_icon = load_sprite(SPRITE_ICON);
+
+	set_window_icon(sprite_icon);
 }
 
 void draw(int x, int y, int width, int height)
@@ -86,7 +92,9 @@ void onmouseup(int btn, int x, int y)
 
 void unload()
 {
-	unload_sprite(icon);
+	unload_sprite(sprite_icon);
+	unload_blocks();
+	unload_ball();
 	unload_fonts();
 }
 

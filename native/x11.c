@@ -2,6 +2,7 @@
 #include <X11/xpm.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/Xdbe.h>
+#include <X11/extensions/Xrender.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -16,8 +17,14 @@
 
 Display *display;
 Window window;
-XdbeBackBuffer back_buffer;
+
 bool has_back_buffer = false;
+XdbeBackBuffer back_buffer;
+
+bool has_xrender = false;
+Picture root_picture;
+XRenderPictFormat *default_format;
+
 bool has_drawn_to_screen = false;
 
 int get_sprite_width(sprite_t sprite)
@@ -56,60 +63,52 @@ void set_window_icon(sprite_t icon)
 	XSetWMHints(display, window, &hints);
 }
 
-sprite_t load_sprite(sprite_identifier_t sprite)
+sprite_t load_sprite(sprite_identifier_t sprite_xpm)
 {
 	int width, height;
-	sscanf(sprite[0], "%d %d ", &width, &height);
+	sscanf(sprite_xpm[0], "%d %d ", &width, &height);
 
 	XpmAttributes attributes;
 	attributes.valuemask = XpmReturnAllocPixels | XpmReturnExtensions;
 
-	Pixmap pixmap, shapemask;
-	XpmCreatePixmapFromData(display, window, sprite, &pixmap, &shapemask, &attributes);
+	Pixmap pixmap, shapemask = None;
+	XpmCreatePixmapFromData(display, window, sprite_xpm, &pixmap, &shapemask, &attributes);
+
+	Picture picture = None;
+	if (has_xrender) picture = XRenderCreatePicture(display, pixmap, default_format, 0, NULL);
 
 	XpmFreeAttributes(&attributes);
 
-	sprite_t result = {
+	return (sprite_t) {
 		.pixmap = pixmap,
 		.shapemask = shapemask,
+		.picture = picture,
 		.width = width,
 		.height = height
 	};
-	return result;
 }
 
 void unload_sprite(sprite_t sprite)
 {
 	XFreePixmap(display, sprite.pixmap);
 	if (sprite.shapemask) XFreePixmap(display, sprite.shapemask);
+	if (has_xrender) XRenderFreePicture(display, sprite.picture);
 }
 
 void draw_sprite(sprite_t sprite, int x, int y)
 {
-	XGCValues values;
-	values.clip_mask = sprite.shapemask;
-	values.clip_x_origin = x;
-	values.clip_y_origin = y;
-	GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
+	if (has_xrender) {
+		XRenderComposite(display, PictOpSrc, sprite.picture, None, root_picture, 0, 0, 0, 0, x, y, sprite.width, sprite.height);
+	} else {
+		XGCValues values;
+		values.clip_mask = sprite.shapemask;
+		values.clip_x_origin = x;
+		values.clip_y_origin = y;
+		GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
 
-	if (brightness < 1) {
-		XImage *image = XGetImage(display, sprite.pixmap, 0, 0, sprite.width, sprite.height, AllPlanes, ZPixmap);
-
-		for (int x = 0; x < sprite.width; x++) {
-			for (int y = 0; y < sprite.height; y++) {
-				struct color color = to_color(XGetPixel(image, x, y));
-				apply_brightness(&color, brightness);
-				XPutPixel(image, x, y, parse_color(color));
-			}
-		}
-
-		XPutImage(display, sprite.pixmap, DefaultGC(display, DefaultScreen(display)), image, 0, 0, 0, 0, sprite.width, sprite.height);
-		XDestroyImage(image);
+		XCopyArea(display, sprite.pixmap, back_buffer, gc, 0, 0, sprite.width, sprite.height, x, y);
+		XFreeGC(display, gc);
 	}
-
-
-	XCopyArea(display, sprite.pixmap, back_buffer, gc, 0, 0, sprite.width, sprite.height, x, y);
-	XFreeGC(display, gc);
 
 	has_drawn_to_screen = true;
 }
@@ -121,8 +120,6 @@ void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite
 	values.clip_x_origin = x - sprite_x;
 	values.clip_y_origin = y - sprite_y;
 	GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
-
-	// TODO brightness
 
 	XCopyArea(display, sprite.pixmap, back_buffer, gc, sprite_x, sprite_y, sprite_width, sprite_height, x, y);
 	XFreeGC(display, gc);
@@ -209,11 +206,15 @@ int main(int argc, char **argv)
 
 	window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, WIDTH_PX, HEIGHT_PX, 0, white, white);
 
+	// Xlib extensions
+
 	// Create back buffer for double buffering
 	XdbeSwapInfo swap_info;
 	int xdbe_major_version, xdbe_minor_version;
-	if (XdbeQueryExtension(display, &xdbe_major_version, &xdbe_minor_version)) {
-		has_back_buffer = true;
+	has_back_buffer = XdbeQueryExtension(display, &xdbe_major_version, &xdbe_minor_version);
+
+	if (has_back_buffer) {
+		printf("Using Xdbe version %d.%d\n", xdbe_major_version, xdbe_minor_version);
 
 		back_buffer = XdbeAllocateBackBufferName(display, window, 0);
 
@@ -221,7 +222,24 @@ int main(int argc, char **argv)
 			.swap_window = window,
 			.swap_action = 0
 		};
+	} else {
+		puts("Xdbe extension not available. Output will not be double buffered.");
+
+		back_buffer = window;
 	}
+
+	int xrender_major_version, xrender_minor_version;
+	has_xrender = XRenderQueryVersion(display, &xrender_major_version, &xrender_minor_version);
+
+	if (has_xrender) {
+		printf("Using Xrender version %d.%d\n", xrender_major_version, xrender_minor_version);
+
+		default_format = XRenderFindVisualFormat(display, DefaultVisual(display, 0));
+		root_picture = XRenderCreatePicture(display, back_buffer, default_format, 0, NULL);
+	} else puts("Xrender extension not available. Some visual effects might not show.");
+
+	XWindowAttributes windowAttributes;
+	XGetWindowAttributes(display, window, &windowAttributes);
 
 	init();
 

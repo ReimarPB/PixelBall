@@ -4,6 +4,9 @@
 #include "../globals.h"
 #include "../native/common.h"
 
+struct block BLOCK_GRASS;
+sprite_t sprite_grass;
+
 bool standard_collision_handler(struct ball *ball, struct block block, int block_x, int block_y, enum axis axis)
 {
 	switch (axis) {
@@ -30,9 +33,19 @@ bool standard_collision_handler(struct ball *ball, struct block block, int block
 	return true;
 }
 
-struct block BLOCK_GRASS = {
-	.sprite = SPRITE_GRASS,
-	.particle_color = (struct color) { .red = 0, .green = 211, .blue = 0 },
-	.collision_handler = &standard_collision_handler,
-};
+void init_blocks()
+{
+	sprite_grass = load_sprite(SPRITE_GRASS);
+
+	BLOCK_GRASS = (struct block) {
+		.sprite = sprite_grass,
+		.particle_color = (struct color) { .red = 0, .green = 211, .blue = 0 },
+		.collision_handler = &standard_collision_handler,
+	};
+}
+
+void unload_blocks()
+{
+	unload_sprite(sprite_grass);
+}
 

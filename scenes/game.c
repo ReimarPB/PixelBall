@@ -7,11 +7,13 @@
 #include "../entities/particle.h"
 #include "../scenes/pause.h"
 #include "../native/common.h"
+#include "../components/background.h"
 #include "../globals.h"
 #include "game.h"
 
 static struct ball ball = { 0 };
 struct block *level[HEIGHT_BLOCKS][WIDTH_BLOCKS] = { 0 };
+sprite_t sprite_background;
 
 int keep_in_width_range(float x)
 {
@@ -29,6 +31,9 @@ int keep_in_height_range(float x)
 
 void init_game()
 {
+	// TODO unload
+	sprite_background = load_sprite(SPRITE_BACKGROUND);
+
 	ball = (struct ball){
 		.x = 2.0,
 		.y = 0.0,
@@ -62,11 +67,7 @@ void update_game()
 
 void draw_game(int x, int y, int width, int height)
 {
-	// Background
-	draw_rect(
-		rgb(129, 212, 250),
-		x, y, width, height
-	);
+	draw_partial_sprite(sprite_background, x, y, x, y, width, height);
 
 	int min_block_x = floor(x / BLOCK_SIZE);
 	int max_block_x = ceil((x + width) / BLOCK_SIZE);
@@ -82,9 +83,7 @@ void draw_game(int x, int y, int width, int height)
 			if (level[y][x] == NULL) continue;
 
 			// TODO only load sprites once
-			sprite_t sprite = load_sprite(level[y][x]->sprite);
-			draw_sprite(sprite, x * BLOCK_SIZE, y * BLOCK_SIZE);
-			unload_sprite(sprite);
+			draw_sprite(level[y][x]->sprite, x * BLOCK_SIZE, y * BLOCK_SIZE);
 		}
 	}
 

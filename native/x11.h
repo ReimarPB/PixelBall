@@ -2,6 +2,7 @@
 #define NATIVE_X11_H
 
 #include <X11/Xlib.h>
+#include <X11/extensions/Xrender.h>
 
 #include "../assets/icon.xpm"
 #define SPRITE_ICON icon_xpm
@@ -24,9 +25,13 @@
 #include "../assets/logo.xpm"
 #define SPRITE_LOGO logo_xpm
 
+#include "../assets/background.xpm"
+#define SPRITE_BACKGROUND background_xpm
+
 typedef struct sprite {
 	Pixmap pixmap;
 	Pixmap shapemask;
+	Picture picture;
 	int width;
 	int height;
 } sprite_t;

@@ -74,8 +74,12 @@ sprite_t load_sprite(sprite_identifier_t sprite_xpm)
 	Pixmap pixmap, shapemask = None;
 	XpmCreatePixmapFromData(display, window, sprite_xpm, &pixmap, &shapemask, &attributes);
 
-	Picture picture = None;
-	if (has_xrender) picture = XRenderCreatePicture(display, pixmap, default_format, 0, NULL);
+	Picture picture = None, shapemask_picture = None;
+	if (has_xrender) {
+		picture = XRenderCreatePicture(display, pixmap, default_format, 0, NULL);
+
+		if (shapemask != None) shapemask_picture = XRenderCreatePicture(display, shapemask, XRenderFindStandardFormat(display, PictStandardA1), 0, NULL);
+	}
 
 	XpmFreeAttributes(&attributes);
 
@@ -83,6 +87,7 @@ sprite_t load_sprite(sprite_identifier_t sprite_xpm)
 		.pixmap = pixmap,
 		.shapemask = shapemask,
 		.picture = picture,
+		.shapemask_picture = shapemask_picture,
 		.width = width,
 		.height = height
 	};
@@ -93,12 +98,13 @@ void unload_sprite(sprite_t sprite)
 	XFreePixmap(display, sprite.pixmap);
 	if (sprite.shapemask) XFreePixmap(display, sprite.shapemask);
 	if (has_xrender) XRenderFreePicture(display, sprite.picture);
+	if (sprite.shapemask_picture) XRenderFreePicture(display, sprite.shapemask_picture);
 }
 
 void draw_sprite(sprite_t sprite, int x, int y)
 {
 	if (has_xrender) {
-		XRenderComposite(display, PictOpSrc, sprite.picture, None, root_picture, 0, 0, 0, 0, x, y, sprite.width, sprite.height);
+		XRenderComposite(display, PictOpOver, sprite.picture, sprite.shapemask_picture, root_picture, 0, 0, 0, 0, x, y, sprite.width, sprite.height);
 	} else {
 		XGCValues values;
 		values.clip_mask = sprite.shapemask;
@@ -107,6 +113,7 @@ void draw_sprite(sprite_t sprite, int x, int y)
 		GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
 
 		XCopyArea(display, sprite.pixmap, back_buffer, gc, 0, 0, sprite.width, sprite.height, x, y);
+
 		XFreeGC(display, gc);
 	}
 
@@ -119,9 +126,11 @@ void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite
 	values.clip_mask = sprite.shapemask;
 	values.clip_x_origin = x - sprite_x;
 	values.clip_y_origin = y - sprite_y;
+
 	GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
 
 	XCopyArea(display, sprite.pixmap, back_buffer, gc, sprite_x, sprite_y, sprite_width, sprite_height, x, y);
+
 	XFreeGC(display, gc);
 
 	has_drawn_to_screen = true;
@@ -135,7 +144,6 @@ void draw_rect(struct color color, int x, int y, int width, int height)
 
 	XSetForeground(display, gc, parse_color(color));
 	XFillRectangle(display, back_buffer, gc, x, y, width, height);
-
 	XFreeGC(display, gc);
 
 	has_drawn_to_screen = true;

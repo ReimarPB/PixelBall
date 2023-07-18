@@ -32,6 +32,7 @@ typedef struct sprite {
 	Pixmap pixmap;
 	Pixmap shapemask;
 	Picture picture;
+	Picture shapemask_picture;
 	int width;
 	int height;
 } sprite_t;

@@ -39,7 +39,7 @@ void init_blocks()
 
 	BLOCK_GRASS = (struct block) {
 		.sprite = sprite_grass,
-		.particle_color = (struct color) { .red = 0, .green = 211, .blue = 0 },
+		.particle_color = rgb(0, 211, 0),
 		.collision_handler = &standard_collision_handler,
 	};
 }

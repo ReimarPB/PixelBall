@@ -11,6 +11,17 @@ struct color rgb(uint8_t red, uint8_t green, uint8_t blue)
 		.red = red,
 		.green = green,
 		.blue = blue,
+		.alpha = 1.0,
+	};
+}
+
+struct color rgba(uint8_t red, uint8_t green, uint8_t blue, float alpha)
+{
+	return (struct color) {
+		.red = red,
+		.green = green,
+		.blue = blue,
+		.alpha = alpha,
 	};
 }
 

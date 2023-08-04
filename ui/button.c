@@ -1,10 +1,11 @@
 #include <string.h>
 #include <stdbool.h>
 
-#include "button.h"
 #include "../globals.h"
+#include "../scenes/scene.h"
 #include "../native/common.h"
-#include "../ui/text.h"
+#include "button.h"
+#include "text.h"
 
 #define BUTTON_BORDER_SIZE 2
 #define BUTTON_SHADOW_SIZE 5
@@ -130,6 +131,13 @@ void draw_buttons(int x, int y, int width, int height)
 	}
 }
 
+void click_button(int index)
+{
+	if (scene == SCENE_TRANSITION) return;
+
+	buttons[index].callback();
+}
+
 void buttons_onkeydown(enum key key, bool ctrl, bool alt, bool shift)
 {
 	switch (key) {
@@ -168,7 +176,7 @@ void buttons_onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 		case KEY_SPACE:
 
 			if (focused_button >= 0)
-				buttons[focused_button].callback();
+				click_button(focused_button);
 
 			button_pressed = false;
 			redraw_button(focused_button);
@@ -205,7 +213,7 @@ void buttons_onmouseup(int mouse_btn, int x, int y)
 	if (mouse_btn != 1) return;
 
 	if (get_button_from_coords(x, y) == focused_button && focused_button >= 0 && button_pressed) {
-		buttons[focused_button].callback();
+		click_button(focused_button);
 
 		redraw_button(focused_button);
 	}

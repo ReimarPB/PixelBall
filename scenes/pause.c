@@ -9,7 +9,7 @@
 #include "game.h"
 
 bool ending_pause = false;
-float pause_brightness;
+float opacity;
 
 void unpause()
 {
@@ -41,19 +41,19 @@ void pause()
 	change_scene(SCENE_PAUSE);
 	add_button(pause_buttons[0]);
 	add_button(pause_buttons[1]);
-	pause_brightness = 1.0;
+	opacity = 0.0;
 }
 
 void update_pause()
 {
-	if (!ending_pause && pause_brightness > 0.6) {
-		pause_brightness -= 0.05;
+	if (!ending_pause && opacity < 0.4) {
+		opacity += 0.05;
 		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
 	}
 
 	if (ending_pause) {
-		if (pause_brightness < 1.0) {
-			pause_brightness += 0.1;
+		if (opacity > 0.05) {
+			opacity -= 0.05;
 		} else {
 			clear_buttons();
 			change_scene(SCENE_GAME);
@@ -66,19 +66,9 @@ void update_pause()
 
 void draw_pause(int x, int y, int width, int height)
 {
-	float old_brightness = brightness;
-	brightness = pause_brightness;
+	draw_game(x, y, width, height);
 
-	// Background
-	draw_rect(
-		rgb(129, 212, 250),
-		x, y, width, height
-	);
-
-
-	draw_game(0, 0, WIDTH_PX, HEIGHT_PX);
-
-	brightness = old_brightness;
+	draw_rect(rgba(0, 0, 0, opacity), x, y, width, height);
 
 	draw_text(
 		"PAUSED",

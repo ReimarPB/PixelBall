@@ -37,9 +37,19 @@ int get_sprite_height(sprite_t sprite)
 	return sprite.height;
 }
 
-unsigned long parse_color(struct color color)
+unsigned long color_to_xcolor(struct color color)
 {
 	return (color.red << 16) + (color.green << 8) + color.blue;
+}
+
+XRenderColor color_to_xrendercolor(struct color color)
+{
+	return (XRenderColor) {
+		.red = color.red / 255.0 * 0xFFFF,
+		.green = color.green / 255.0 * 0xFFFF,
+		.blue = color.blue / 255.0 * 0xFFFF,
+		.alpha = color.alpha * 0xFFFF,
+	};
 }
 
 struct color to_color(unsigned long color)
@@ -138,13 +148,17 @@ void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite
 
 void draw_rect(struct color color, int x, int y, int width, int height)
 {
-	GC gc = XCreateGC(display, window, 0, NULL);
+	if (has_xrender) {
+		XRenderColor xrendercolor = color_to_xrendercolor(color);
+		XRenderFillRectangle(display, PictOpOver, root_picture, &xrendercolor, x, y, width, height);
+	} else {
+		GC gc = XCreateGC(display, window, 0, NULL);
 
-	if (brightness < 1) apply_brightness(&color, brightness);
+		XSetForeground(display, gc, color_to_xcolor(color));
+		XFillRectangle(display, back_buffer, gc, x, y, width, height);
 
-	XSetForeground(display, gc, parse_color(color));
-	XFillRectangle(display, back_buffer, gc, x, y, width, height);
-	XFreeGC(display, gc);
+		XFreeGC(display, gc);
+	}
 
 	has_drawn_to_screen = true;
 }

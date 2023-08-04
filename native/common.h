@@ -23,11 +23,14 @@ struct color {
 	uint8_t red;
 	uint8_t green;
 	uint8_t blue;
+	float alpha;
 };
 
 extern float brightness;
 
 struct color rgb(uint8_t red, uint8_t green, uint8_t blue);
+
+struct color rgba(uint8_t red, uint8_t green, uint8_t blue, float alpha);
 
 void apply_brightness(struct color *color, float brightness);
 

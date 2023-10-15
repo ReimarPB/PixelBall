@@ -63,15 +63,10 @@ void update_particles()
 	}
 }
 
-void draw_particles(int x, int y, int width, int height)
+void draw_particles()
 {
 	for (struct particle *particle = particle_head; particle != NULL; particle = particle->next) {
-		if (
-			particle->x + PARTICLE_SIZE >= x && particle->x <= x + width &&
-			particle->y + PARTICLE_SIZE >= y && particle->y <= y + height
-		) {
-			draw_rect(particle->color, particle->x, particle->y, PARTICLE_SIZE, PARTICLE_SIZE);
-		}
+		draw_rect(particle->color, particle->x, particle->y, PARTICLE_SIZE, PARTICLE_SIZE);
 	}
 }
 

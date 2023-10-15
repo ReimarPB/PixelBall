@@ -37,16 +37,16 @@ void init()
 	set_window_icon(sprite_icon);
 }
 
-void draw(int x, int y, int width, int height)
+void draw()
 {
 	switch (scene) {
-		case SCENE_GAME:       draw_game(x, y, width, height);       break;
-		case SCENE_PAUSE:      draw_pause(x, y, width, height);      break;
-		case SCENE_MAIN_MENU:  draw_main_menu(x, y, width, height);  break;
-		case SCENE_TRANSITION: draw_transition(x, y, width, height); return; // don't draw buttons on top of transition
+		case SCENE_GAME:       draw_game();       break;
+		case SCENE_PAUSE:      draw_pause();      break;
+		case SCENE_MAIN_MENU:  draw_main_menu();  break;
+		case SCENE_TRANSITION: draw_transition(); return; // don't draw buttons on top of transition
 	}
 
-	draw_buttons(x, y, width, height);
+	draw_buttons();
 }
 
 void update()

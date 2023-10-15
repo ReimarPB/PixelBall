@@ -25,9 +25,9 @@ void init_main_menu()
 	add_button(play_button);
 }
 
-void draw_main_menu(int x, int y, int width, int height)
+void draw_main_menu()
 {
-	draw_partial_sprite(sprite_background, x, y, x, y, width, height);
+	draw_sprite(sprite_background, 0, 0);
 
 	draw_sprite(sprite_logo, WIDTH_PX / 2 - get_sprite_width(sprite_logo) / 2, 50);
 }

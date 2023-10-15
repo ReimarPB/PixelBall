@@ -64,11 +64,11 @@ void update_pause()
 	}
 }
 
-void draw_pause(int x, int y, int width, int height)
+void draw_pause()
 {
-	draw_game(x, y, width, height);
+	draw_game();
 
-	draw_rect(rgba(0, 0, 0, opacity), x, y, width, height);
+	draw_rect(rgba(0, 0, 0, opacity), 0, 0, WIDTH_PX, HEIGHT_PX);
 
 	draw_text(
 		"PAUSED",

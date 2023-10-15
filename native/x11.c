@@ -114,17 +114,7 @@ void unload_sprite(sprite_t sprite)
 
 void draw_sprite(sprite_t sprite, int x, int y)
 {
-	int offset_x = 0, offset_y = 0;
-
-	if (x < redraw_x) {
-		offset_x = redraw_x - x;
-	}
-
-	if (y < redraw_y) {
-		offset_y = redraw_y - y;
-	}
-
-	draw_partial_sprite(sprite, x + offset_x, y + offset_y, offset_x, offset_y, sprite.width, sprite.height);
+	draw_partial_sprite(sprite, x, y, 0, 0, sprite.width, sprite.height);
 }
 
 void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite_y, int sprite_width, int sprite_height)
@@ -166,6 +156,11 @@ void draw_rect(struct color color, int x, int y, int width, int height)
 	}
 
 	has_drawn_to_screen = true;
+}
+
+void redraw()
+{
+	redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
 }
 
 void redraw_area(int x, int y, int width, int height)
@@ -314,7 +309,7 @@ int main(int argc, char **argv)
 
 				if (!redraw_x && !redraw_y && !redraw_width && !redraw_height) break;
 
-				draw(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
+				draw();
 				break;
 			case KeyPress:
 				keysym = XkbKeycodeToKeysym(display, event.xkey.keycode, 0, 0);

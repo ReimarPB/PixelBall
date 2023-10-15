@@ -63,10 +63,10 @@ void update_transition()
 		return;
 	}
 
-	redraw_area(0, abs(progress), WIDTH_PX, TRANSITION_SPEED + TRANSITION_CHUNK_MAX_HEIGHT);
+	redraw();
 }
 
-void draw_transition(int x, int y, int width, int height)
+void draw_transition()
 {
 	int scene_start  = progress > 0 ? TRANSITION_FULL_HEIGHT - progress : 0;
 	int scene_height = progress > 0 ? progress : -progress;
@@ -76,7 +76,7 @@ void draw_transition(int x, int y, int width, int height)
 
 	// Draw scene area
 	scene = progress > 0 ? old_scene : new_scene;
-	draw(0, scene_start, WIDTH_PX, scene_height);
+	draw();
 	scene = SCENE_TRANSITION;
 
 	// Draw black transition area

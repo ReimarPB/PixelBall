@@ -9,7 +9,7 @@ void init_game();
 
 void update_game();
 
-void draw_game(int x, int y, int width, int height);
+void draw_game();
 
 void game_onkeydown(enum key key, bool ctrl, bool alt, bool shift);
 

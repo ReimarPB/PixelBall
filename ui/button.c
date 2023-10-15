@@ -84,7 +84,7 @@ void init_buttons()
 	clear_buttons();
 }
 
-void draw_buttons(int x, int y, int width, int height)
+void draw_buttons()
 {
 	for (int i = 0; i < button_amount; i++) {
 		struct button button = buttons[i];
@@ -96,14 +96,6 @@ void draw_buttons(int x, int y, int width, int height)
 		int btn_x = get_x_from_position(button.position, btn_width);
 		int btn_y = get_y_from_position(button.position, btn_height);
 		int y_offset = focused_button == i && button_pressed ? BUTTON_SHADOW_SIZE : 0;
-
-		// Check if it needs to be drawn
-		if (
-			(btn_x + btn_width < x || btn_x > x + width) &&
-			(btn_y + btn_height < y || btn_y > y + height)
-		) {
-			continue;
-		}
 
 		// Draw button
 		if (focused_button == i && button_pressed) {

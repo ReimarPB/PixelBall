@@ -20,7 +20,7 @@ extern struct button buttons[MAX_BUTTON_AMOUNT];
 
 void init_buttons();
 
-void draw_buttons(int x, int y, int width, int height);
+void draw_buttons();
 
 void buttons_onkeydown(enum key key, bool ctrl, bool alt, bool shift);
 

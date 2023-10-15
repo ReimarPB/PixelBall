@@ -4,7 +4,7 @@
 
 void init();
 
-void draw(int x, int y, int width, int height);
+void draw();
 
 void update();
 

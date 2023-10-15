@@ -4,5 +4,5 @@ void add_particle(struct color color, int x, int y, float min_x_vel, float max_x
 
 void update_particles();
 
-void draw_particles(int x, int y, int width, int height);
+void draw_particles();
 

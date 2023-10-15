@@ -65,30 +65,20 @@ void update_game()
 	update_particles();
 }
 
-void draw_game(int x, int y, int width, int height)
+void draw_game()
 {
-	draw_partial_sprite(sprite_background, x, y, x, y, width, height);
+	draw_sprite(sprite_background, 0, 0);
 
-	int min_block_x = floor(x / BLOCK_SIZE);
-	int max_block_x = ceil((x + width) / BLOCK_SIZE);
-	int min_block_y = floor(y / BLOCK_SIZE);
-	int max_block_y = ceil((y + height) / BLOCK_SIZE);
-
-	// Keep within bounds
-	if (max_block_x >= WIDTH_BLOCKS)  max_block_x = WIDTH_BLOCKS - 1;
-	if (max_block_y >= HEIGHT_BLOCKS) max_block_y = HEIGHT_BLOCKS - 1;
-
-	for (int y = min_block_y; y <= max_block_y; y++) {
-		for (int x = min_block_x; x <= max_block_x; x++) {
+	for (int y = 0; y < HEIGHT_BLOCKS; y++) {
+		for (int x = 0; x < WIDTH_BLOCKS; x++) {
 			if (level[y][x] == NULL) continue;
 
-			// TODO only load sprites once
 			draw_sprite(level[y][x]->sprite, x * BLOCK_SIZE, y * BLOCK_SIZE);
 		}
 	}
 
 	draw_ball(ball);
-	draw_particles(x, y, width, height);
+	draw_particles();
 }
 
 void game_onkeydown(enum key key, bool ctrl, bool alt, bool shift)

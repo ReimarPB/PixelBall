@@ -4,7 +4,7 @@
 
 static sprite_t sprite_logo, sprite_background;
 
-void play()
+void play(void)
 {
 	transition_to_scene(SCENE_GAME);
 }
@@ -16,7 +16,7 @@ static struct button play_button = {
 	.type = BUTTON_TYPE_STANDARD,
 };
 
-void init_main_menu()
+void init_main_menu(void)
 {
 	// TODO unlaod
 	sprite_logo = load_sprite(SPRITE_LOGO);
@@ -25,7 +25,7 @@ void init_main_menu()
 	add_button(play_button);
 }
 
-void draw_main_menu()
+void draw_main_menu(void)
 {
 	draw_sprite(sprite_background, 0, 0);
 

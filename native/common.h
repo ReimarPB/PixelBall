@@ -52,11 +52,11 @@ void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite
 
 void draw_rect(struct color color, int x, int y, int width, int height);
 
-void redraw();
+void redraw(void);
 
 void redraw_area(int x, int y, int width, int height);
 
-struct point get_mouse_coords();
+struct point get_mouse_coords(void);
 
 #endif
 

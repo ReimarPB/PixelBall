@@ -16,12 +16,12 @@ bool handle_collision(struct ball *ball, int block_x, int block_y, enum axis axi
 	return block != NULL && block->collision_handler(ball, *block, block_x, block_y, axis);
 }
 
-void init_ball()
+void init_ball(void)
 {
 	sprite_ball = load_sprite(SPRITE_BALL);
 }
 
-void unload_ball()
+void unload_ball(void)
 {
 	unload_sprite(sprite_ball);
 }

@@ -16,9 +16,9 @@ struct font {
 
 extern struct font *font_5x7, *font_5x7_x2, *font_5x7_x4, *font_9x14;
 
-void init_fonts();
+void init_fonts(void);
 
-void unload_fonts();
+void unload_fonts(void);
 
 void draw_text(char *text, struct font *font, struct position position);
 

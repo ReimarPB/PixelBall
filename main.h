@@ -2,11 +2,11 @@
 
 #include "native/common.h"
 
-void init();
+void init(void);
 
-void draw();
+void draw(void);
 
-void update();
+void update(void);
 
 void onkeydown(enum key key, bool ctrl, bool alt, bool shift);
 
@@ -18,5 +18,5 @@ void onmousedown(int btn, int x, int y);
 
 void onmouseup(int btn, int x, int y);
 
-void unload();
+void unload(void);
 

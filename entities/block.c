@@ -33,7 +33,7 @@ bool standard_collision_handler(struct ball *ball, struct block block, int block
 	return true;
 }
 
-void init_blocks()
+void init_blocks(void)
 {
 	sprite_grass = load_sprite(SPRITE_GRASS);
 
@@ -44,7 +44,7 @@ void init_blocks()
 	};
 }
 
-void unload_blocks()
+void unload_blocks(void)
 {
 	unload_sprite(sprite_grass);
 }

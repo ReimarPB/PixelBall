@@ -26,7 +26,6 @@ Picture root_picture;
 XRenderPictFormat *default_format;
 
 bool has_drawn_to_screen = false;
-int redraw_x, redraw_y, redraw_width, redraw_height;
 
 int get_sprite_width(sprite_t sprite)
 {
@@ -158,7 +157,7 @@ void draw_rect(struct color color, int x, int y, int width, int height)
 	has_drawn_to_screen = true;
 }
 
-void redraw()
+void redraw(void)
 {
 	redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
 }
@@ -176,7 +175,7 @@ void redraw_area(int x, int y, int width, int height)
 	XSendEvent(display, window, false, ExposureMask, &event);
 }
 
-struct point get_mouse_coords()
+struct point get_mouse_coords(void)
 {
 	Window root, child;
 	int root_x, root_y, win_x, win_y;
@@ -188,7 +187,7 @@ struct point get_mouse_coords()
 		return (struct point) { -1, -1 };
 }
 
-void *game_loop()
+void *game_loop(void)
 {
 	struct timespec frame_time = {
 		.tv_sec = 0,
@@ -302,12 +301,8 @@ int main(int argc, char **argv)
 			case Expose:
 				if (event.xexpose.count != 0) break;
 
-				redraw_x = event.xexpose.x;
-				redraw_y = event.xexpose.y;
-				redraw_width = event.xexpose.width;
-				redraw_height = event.xexpose.height;
-
-				if (!redraw_x && !redraw_y && !redraw_width && !redraw_height) break;
+				XExposeEvent ex = event.xexpose;
+				if (!ex.x && !ex.y && !ex.width && !ex.height) break;
 
 				draw();
 				break;

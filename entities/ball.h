@@ -13,9 +13,9 @@ struct ball {
 	bool going_right;
 };
 
-void init_ball();
+void init_ball(void);
 
-void unload_ball();
+void unload_ball(void);
 
 void update_ball(struct ball *ball);
 

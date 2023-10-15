@@ -21,7 +21,7 @@ int progress;
 
 int chunk_offsets[TRANSITION_CHUNK_AMOUNT];
 
-void generate_offsets()
+void generate_offsets(void)
 {
 	for (int i = 0; i < TRANSITION_CHUNK_AMOUNT; i++) {
 		do {
@@ -42,7 +42,7 @@ void transition_to_scene(enum scene new)
 	generate_offsets();
 }
 
-void update_transition()
+void update_transition(void)
 {
 	progress -= TRANSITION_SPEED;
 
@@ -66,7 +66,7 @@ void update_transition()
 	redraw();
 }
 
-void draw_transition()
+void draw_transition(void)
 {
 	int scene_start  = progress > 0 ? TRANSITION_FULL_HEIGHT - progress : 0;
 	int scene_height = progress > 0 ? progress : -progress;

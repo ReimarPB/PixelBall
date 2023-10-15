@@ -71,7 +71,7 @@ void redraw_button(int button_index)
 	redraw_area(x, y, width, height);
 }
 
-void clear_buttons()
+void clear_buttons(void)
 {
 	memset(&buttons, 0, sizeof(buttons));
 	button_amount = 0;
@@ -79,12 +79,12 @@ void clear_buttons()
 	button_pressed = false;
 }
 
-void init_buttons()
+void init_buttons(void)
 {
 	clear_buttons();
 }
 
-void draw_buttons()
+void draw_buttons(void)
 {
 	for (int i = 0; i < button_amount; i++) {
 		struct button button = buttons[i];

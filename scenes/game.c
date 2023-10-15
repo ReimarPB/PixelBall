@@ -29,7 +29,7 @@ int keep_in_height_range(float x)
 	return x;
 }
 
-void init_game()
+void init_game(void)
 {
 	// TODO unload
 	sprite_background = load_sprite(SPRITE_BACKGROUND);
@@ -56,7 +56,7 @@ void init_game()
 	level[5][8] = &BLOCK_GRASS;
 }
 
-void update_game()
+void update_game(void)
 {
 	struct ball old_ball = ball;
 	update_ball(&ball);
@@ -65,7 +65,7 @@ void update_game()
 	update_particles();
 }
 
-void draw_game()
+void draw_game(void)
 {
 	draw_sprite(sprite_background, 0, 0);
 

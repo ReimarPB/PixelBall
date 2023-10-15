@@ -10,7 +10,7 @@ const char *FONT_STRING = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 struct font *font_5x7, *font_5x7_x2, *font_5x7_x4, *font_9x14;
 
-void init_fonts()
+void init_fonts(void)
 {
 	font_5x7 = malloc(sizeof(struct font));
 	*font_5x7 = (struct font) {
@@ -37,7 +37,7 @@ void init_fonts()
 	};
 }
 
-void unload_fonts()
+void unload_fonts(void)
 {
 	unload_sprite(font_5x7->sprite);
 	unload_sprite(font_5x7_x2->sprite);

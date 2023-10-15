@@ -18,9 +18,9 @@ struct button {
 
 extern struct button buttons[MAX_BUTTON_AMOUNT];
 
-void init_buttons();
+void init_buttons(void);
 
-void draw_buttons();
+void draw_buttons(void);
 
 void buttons_onkeydown(enum key key, bool ctrl, bool alt, bool shift);
 
@@ -34,5 +34,5 @@ void buttons_onmouseup(int mouse_btn, int x, int y);
 
 void add_button(struct button button);
 
-void clear_buttons();
+void clear_buttons(void);
 

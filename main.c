@@ -20,7 +20,7 @@
 enum scene scene = SCENE_GAME;
 sprite_t sprite_icon;
 
-void init()
+void init(void)
 {
 	srand(time(0));
 
@@ -37,7 +37,7 @@ void init()
 	set_window_icon(sprite_icon);
 }
 
-void draw()
+void draw(void)
 {
 	switch (scene) {
 		case SCENE_GAME:       draw_game();       break;
@@ -49,7 +49,7 @@ void draw()
 	draw_buttons();
 }
 
-void update()
+void update(void)
 {
 	switch (scene) {
 		case SCENE_GAME:       update_game();       break;
@@ -90,7 +90,7 @@ void onmouseup(int btn, int x, int y)
 	buttons_onmouseup(btn, x, y);
 }
 
-void unload()
+void unload(void)
 {
 	unload_sprite(sprite_icon);
 	unload_blocks();

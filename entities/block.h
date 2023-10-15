@@ -15,7 +15,7 @@ struct block {
 
 extern struct block BLOCK_GRASS;
 
-void init_blocks();
+void init_blocks(void);
 
-void unload_blocks();
+void unload_blocks(void);
 

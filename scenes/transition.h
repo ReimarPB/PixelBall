@@ -2,7 +2,7 @@
 
 void transition_to_scene(enum scene new_scene);
 
-void update_transition();
+void update_transition(void);
 
-void draw_transition();
+void draw_transition(void);
 

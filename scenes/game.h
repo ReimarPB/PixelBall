@@ -5,11 +5,11 @@
 
 extern struct block *level[HEIGHT_BLOCKS][WIDTH_BLOCKS];
 
-void init_game();
+void init_game(void);
 
-void update_game();
+void update_game(void);
 
-void draw_game();
+void draw_game(void);
 
 void game_onkeydown(enum key key, bool ctrl, bool alt, bool shift);
 

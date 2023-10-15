@@ -11,12 +11,12 @@
 bool ending_pause = false;
 float opacity;
 
-void unpause()
+void unpause(void)
 {
 	ending_pause = true;
 }
 
-void go_to_menu()
+void go_to_menu(void)
 {
 	transition_to_scene(SCENE_MAIN_MENU);
 }
@@ -36,7 +36,7 @@ static struct button pause_buttons[] = {
 	},
 };
 
-void pause()
+void pause(void)
 {
 	change_scene(SCENE_PAUSE);
 	add_button(pause_buttons[0]);
@@ -44,7 +44,7 @@ void pause()
 	opacity = 0.0;
 }
 
-void update_pause()
+void update_pause(void)
 {
 	if (!ending_pause && opacity < 0.4) {
 		opacity += 0.05;
@@ -64,7 +64,7 @@ void update_pause()
 	}
 }
 
-void draw_pause()
+void draw_pause(void)
 {
 	draw_game();
 

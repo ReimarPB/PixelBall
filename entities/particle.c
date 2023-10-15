@@ -40,7 +40,7 @@ void add_particle(struct color color, int x, int y, float min_x_vel, float max_x
 	particle_head = particle;
 }
 
-void update_particles()
+void update_particles(void)
 {
 	for (struct particle *particle = particle_head, *prev = NULL; particle != NULL; particle = particle->next) {
 		redraw_area(particle->x, particle->y, PARTICLE_SIZE, PARTICLE_SIZE);
@@ -63,7 +63,7 @@ void update_particles()
 	}
 }
 
-void draw_particles()
+void draw_particles(void)
 {
 	for (struct particle *particle = particle_head; particle != NULL; particle = particle->next) {
 		draw_rect(particle->color, particle->x, particle->y, PARTICLE_SIZE, PARTICLE_SIZE);

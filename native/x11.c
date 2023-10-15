@@ -26,6 +26,7 @@ Picture root_picture;
 XRenderPictFormat *default_format;
 
 bool has_drawn_to_screen = false;
+int redraw_x, redraw_y, redraw_width, redraw_height;
 
 int get_sprite_width(sprite_t sprite)
 {
@@ -113,35 +114,39 @@ void unload_sprite(sprite_t sprite)
 
 void draw_sprite(sprite_t sprite, int x, int y)
 {
-	if (has_xrender) {
-		XRenderComposite(display, PictOpOver, sprite.picture, sprite.shapemask_picture, root_picture, 0, 0, 0, 0, x, y, sprite.width, sprite.height);
-	} else {
-		XGCValues values;
-		values.clip_mask = sprite.shapemask;
-		values.clip_x_origin = x;
-		values.clip_y_origin = y;
-		GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
+	int offset_x = 0, offset_y = 0;
 
-		XCopyArea(display, sprite.pixmap, back_buffer, gc, 0, 0, sprite.width, sprite.height, x, y);
-
-		XFreeGC(display, gc);
+	if (x < redraw_x) {
+		offset_x = redraw_x - x;
 	}
 
-	has_drawn_to_screen = true;
+	if (y < redraw_y) {
+		offset_y = redraw_y - y;
+	}
+
+	draw_partial_sprite(sprite, x + offset_x, y + offset_y, offset_x, offset_y, sprite.width, sprite.height);
 }
 
 void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite_y, int sprite_width, int sprite_height)
 {
-	XGCValues values;
-	values.clip_mask = sprite.shapemask;
-	values.clip_x_origin = x - sprite_x;
-	values.clip_y_origin = y - sprite_y;
+	if (has_xrender) {
+		XRenderComposite(
+			display, PictOpOver, sprite.picture, sprite.shapemask_picture, root_picture,
+			sprite_x, sprite_y, sprite_x, sprite_y,
+			x, y, sprite_width, sprite_height
+		);
+	} else {
+		XGCValues values;
+		values.clip_mask = sprite.shapemask;
+		values.clip_x_origin = x - sprite_x;
+		values.clip_y_origin = y - sprite_y;
 
-	GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
+		GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
 
-	XCopyArea(display, sprite.pixmap, back_buffer, gc, sprite_x, sprite_y, sprite_width, sprite_height, x, y);
+		XCopyArea(display, sprite.pixmap, back_buffer, gc, sprite_x, sprite_y, sprite_width, sprite_height, x, y);
 
-	XFreeGC(display, gc);
+		XFreeGC(display, gc);
+	}
 
 	has_drawn_to_screen = true;
 }
@@ -302,7 +307,12 @@ int main(int argc, char **argv)
 			case Expose:
 				if (event.xexpose.count != 0) break;
 
-				if (!event.xexpose.x && !event.xexpose.y && !event.xexpose.width && !event.xexpose.height) break;
+				redraw_x = event.xexpose.x;
+				redraw_y = event.xexpose.y;
+				redraw_width = event.xexpose.width;
+				redraw_height = event.xexpose.height;
+
+				if (!redraw_x && !redraw_y && !redraw_width && !redraw_height) break;
 
 				draw(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
 				break;

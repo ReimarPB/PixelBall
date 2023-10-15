@@ -27,6 +27,66 @@ XRenderPictFormat *default_format;
 
 bool has_drawn_to_screen = false;
 int redraw_x, redraw_y, redraw_width, redraw_height;
+bool debug = false;
+
+pthread_t game_thread;
+
+void *game_loop()
+{
+	struct timespec frame_time = {
+		.tv_sec = 0,
+		.tv_nsec = (1.0 / FPS) * 1000000000,
+	};
+
+	while (true) {
+		update();
+		XFlush(display);
+		nanosleep(&frame_time, NULL);
+	}
+}
+
+void debug_draw(int x, int y, int width, int height)
+{
+	if (!debug || !has_xrender) return;
+
+	// Copy window
+	GC gc = XCreateGC(display, back_buffer, 0, NULL);
+	Pixmap offscreen_pixmap = XCreatePixmap(display, back_buffer, WIDTH_PX, HEIGHT_PX, DefaultDepth(display, DefaultScreen(display)));
+	XCopyArea(display, back_buffer, offscreen_pixmap, gc, 0, 0, WIDTH_PX, HEIGHT_PX, 0, 0);
+
+	// Draw rectangle
+	XRenderColor blue = { .red = 0, .green = 0, .blue = 0xFFFF, .alpha = 0x7777 };
+	XRenderFillRectangle(display, PictOpOver, root_picture, &blue, x, y, width, height);
+
+	// Draw expose area
+	XRenderColor red = { .red = 0xFFFF, .green = 0, .blue = 0, .alpha = 0x7777 };
+	XRenderFillRectangle(display, PictOpOver, root_picture, &red, redraw_x, redraw_y, redraw_width, redraw_height);
+
+	XFlush(display);
+	XdbeSwapInfo swap_info = { .swap_window = window, .swap_action = 0 };
+	XdbeSwapBuffers(display, &swap_info, 1);
+
+	puts("------");
+	printf("\x1b[91mRedraw area: \x1b[0mx=%d, y=%d, width=%d, height=%d\n", redraw_x, redraw_y, redraw_width, redraw_height);
+	printf("\x1b[94mDrawing area: \x1b[0mx=%d, y=%d, width=%d, height=%d\n", x, y, width, height);
+
+	// Wait for keypress
+	XEvent event;
+	while (true) {
+		XNextEvent(display, &event);
+		if (event.type == KeyPress) break;
+	}
+
+	// Paste window and cancel if key was F1
+	XCopyArea(display, offscreen_pixmap, back_buffer, gc, 0, 0, WIDTH_PX, HEIGHT_PX, 0, 0);	
+	XdbeSwapBuffers(display, &swap_info, 1);
+
+	debug = XkbKeycodeToKeysym(display, event.xkey.keycode, 0, 0) != XK_F1;
+
+	if (!debug) {
+		redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
+	}
+}
 
 int get_sprite_width(sprite_t sprite)
 {
@@ -114,17 +174,25 @@ void unload_sprite(sprite_t sprite)
 
 void draw_sprite(sprite_t sprite, int x, int y)
 {
-	int offset_x = 0, offset_y = 0;
+	int start_offset_x = 0, start_offset_y = 0, end_offset_x = 0, end_offset_y = 0;
 
 	if (x < redraw_x) {
-		offset_x = redraw_x - x;
+		start_offset_x = redraw_x - x;
 	}
 
 	if (y < redraw_y) {
-		offset_y = redraw_y - y;
+		start_offset_y = redraw_y - y;
 	}
 
-	draw_partial_sprite(sprite, x + offset_x, y + offset_y, offset_x, offset_y, sprite.width, sprite.height);
+	if (sprite.width - start_offset_x > redraw_width) {
+		end_offset_x = sprite.width - start_offset_x - redraw_width;
+	}
+
+	if (sprite.height - start_offset_y > redraw_height) {
+		end_offset_y = sprite.height - start_offset_y - redraw_height;
+	}
+
+	draw_partial_sprite(sprite, x + start_offset_x, y + start_offset_y, start_offset_x, start_offset_y, sprite.width - end_offset_x, sprite.height - end_offset_y);
 }
 
 void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite_y, int sprite_width, int sprite_height)
@@ -148,6 +216,8 @@ void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite
 		XFreeGC(display, gc);
 	}
 
+	debug_draw(x, y, sprite_width, sprite_height);
+
 	has_drawn_to_screen = true;
 }
 
@@ -164,6 +234,8 @@ void draw_rect(struct color color, int x, int y, int width, int height)
 
 		XFreeGC(display, gc);
 	}
+
+	debug_draw(x, y, width, height);
 
 	has_drawn_to_screen = true;
 }
@@ -191,20 +263,6 @@ struct point get_mouse_coords()
 		return (struct point) { win_x, win_y };
 	else
 		return (struct point) { -1, -1 };
-}
-
-void *game_loop()
-{
-	struct timespec frame_time = {
-		.tv_sec = 0,
-		.tv_nsec = (1.0 / FPS) * 1000000000,
-	};
-
-	while (true) {
-		update();
-		XFlush(display);
-		nanosleep(&frame_time, NULL);
-	}
 }
 
 enum key translate_keycode(KeySym keysym)
@@ -290,7 +348,6 @@ int main(int argc, char **argv)
 
 	XMapWindow(display, window);
 	
-	pthread_t game_thread;
 	pthread_create(&game_thread, NULL, game_loop, NULL);
 
 	XkbSetDetectableAutoRepeat(display, true, false);
@@ -315,10 +372,16 @@ int main(int argc, char **argv)
 				if (!redraw_x && !redraw_y && !redraw_width && !redraw_height) break;
 
 				draw(event.xexpose.x, event.xexpose.y, event.xexpose.width, event.xexpose.height);
+
 				break;
 			case KeyPress:
 				keysym = XkbKeycodeToKeysym(display, event.xkey.keycode, 0, 0);
 				if (keysym == last_key) break;
+
+				if (keysym == XK_F1) {
+					debug = !debug;
+					break;
+				}
 
 				if ((key = translate_keycode(keysym)))
 					onkeydown(key, event.xkey.state & 4, event.xkey.state & 8, event.xkey.state & 1);

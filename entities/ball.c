@@ -2,6 +2,7 @@
 
 #include "../native/common.h"
 #include "../globals.h"
+#include "../levels/level.h"
 #include "../scenes/game.h"
 #include "ball.h"
 #include "block.h"
@@ -12,7 +13,7 @@ bool handle_collision(struct ball *ball, int block_x, int block_y, enum axis axi
 {
 	if (block_x < 0 || block_x >= WIDTH_BLOCKS || block_y < 0 || block_y >= HEIGHT_BLOCKS) return false;
 
-	struct block *block = level[block_y][block_x];
+	struct block *block = level.blocks[block_y][block_x];
 	return block != NULL && block->collision_handler(ball, *block, block_x, block_y, axis);
 }
 

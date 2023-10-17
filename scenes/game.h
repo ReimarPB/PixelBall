@@ -3,7 +3,9 @@
 #include "../native/common.h"
 #include "../globals.h"
 
-extern struct block *level[HEIGHT_BLOCKS][WIDTH_BLOCKS];
+#define BLOCK_SHADOW_OFFSET 3
+
+extern struct level level;
 
 void init_game(void);
 

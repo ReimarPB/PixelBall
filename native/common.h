@@ -7,6 +7,8 @@
 #include "x11.h"
 #include "../globals.h"
 
+#define NO_COLOR (struct color) { .red = 0, .green = 0, .blue = 0, .alpha = 0.0 }
+
 enum key {
 	KEY_UNKNOWN,
 	KEY_ARROW_LEFT,

@@ -8,11 +8,12 @@
 #include "../scenes/pause.h"
 #include "../native/common.h"
 #include "../components/background.h"
+#include "../levels/level.h"
 #include "../globals.h"
 #include "game.h"
 
 static struct ball ball = { 0 };
-struct block *level[HEIGHT_BLOCKS][WIDTH_BLOCKS] = { 0 };
+struct level level;
 sprite_t sprite_background;
 
 int keep_in_width_range(float x)
@@ -34,26 +35,17 @@ void init_game(void)
 	// TODO unload
 	sprite_background = load_sprite(SPRITE_BACKGROUND);
 
+	// Test level
+	LOAD_LEVEL(test_level);
+
+	level = parse_level(test_level);
+
 	ball = (struct ball){
-		.x = 2.0,
-		.y = 0.0,
+		.x = level.start.x * BLOCK_SIZE,
+		.y = level.start.y * BLOCK_SIZE,
 		.x_vel = 0.0,
 		.y_vel = 0.1
 	};
-
-	// Test level
-	level[8][0] = &BLOCK_GRASS;
-	level[8][1] = &BLOCK_GRASS;
-	level[8][2] = &BLOCK_GRASS;
-	level[8][4] = &BLOCK_GRASS;
-	level[8][5] = &BLOCK_GRASS;
-	level[8][6] = &BLOCK_GRASS;
-	level[8][7] = &BLOCK_GRASS;
-	level[7][8] = &BLOCK_GRASS;
-	level[7][9] = &BLOCK_GRASS;
-	level[6][10] = &BLOCK_GRASS;
-	level[6][11] = &BLOCK_GRASS;
-	level[5][8] = &BLOCK_GRASS;
 }
 
 void update_game(void)
@@ -69,11 +61,27 @@ void draw_game(void)
 {
 	draw_sprite(sprite_background, 0, 0);
 
+	// Draw block shadows
 	for (int y = 0; y < HEIGHT_BLOCKS; y++) {
 		for (int x = 0; x < WIDTH_BLOCKS; x++) {
-			if (level[y][x] == NULL) continue;
+			if (level.blocks[y][x] == NULL) continue;
 
-			draw_sprite(level[y][x]->sprite, x * BLOCK_SIZE, y * BLOCK_SIZE);
+			draw_rect(
+				rgba(0, 0, 0, 0.3),
+				x * BLOCK_SIZE + (x ? BLOCK_SHADOW_OFFSET : 0),
+				y * BLOCK_SIZE + (y ? BLOCK_SHADOW_OFFSET : 0),
+				x ? BLOCK_SIZE : BLOCK_SIZE + BLOCK_SHADOW_OFFSET,
+				y ? BLOCK_SIZE : BLOCK_SIZE + BLOCK_SHADOW_OFFSET
+			);
+		}
+	}
+
+	// Draw blocks
+	for (int y = 0; y < HEIGHT_BLOCKS; y++) {
+		for (int x = 0; x < WIDTH_BLOCKS; x++) {
+			if (level.blocks[y][x] == NULL) continue;
+
+			draw_sprite(*level.blocks[y][x]->sprite, x * BLOCK_SIZE, y * BLOCK_SIZE);
 		}
 	}
 

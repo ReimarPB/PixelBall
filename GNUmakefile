@@ -20,7 +20,7 @@ LIBS=-lX11 -lXpm -lXext -lXrender -lpthread
 
 _ := $(shell mkdir -p build/native build/entities build/scenes build/ui build/utils build/components build/levels)
 
-build/%.o: %.c $(wildcard *.h)
+build/%.o: %.c $(wildcard *.h) $(wildcard *.xpm)
 	$(CC) -c -o $@ $< $(LIBS)
 
 build/%.o: %.pblv

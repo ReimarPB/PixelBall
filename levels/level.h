@@ -4,7 +4,7 @@
 #define LOAD_LEVEL(name)                                        \
 	extern const char _binary_levels_ ## name ## _pblv_start[]; \
 	extern const char _binary_levels_ ## name ## _pblv_end[];   \
-	char *name = strndup(_binary_levels_ ## name ## _pblv_start, _binary_levels_ ## name ## _pblv_end - _binary_levels_ ## name ## _pblv_start)
+	const char *name = _binary_levels_ ## name ## _pblv_start
 
 struct level {
 	struct point start;

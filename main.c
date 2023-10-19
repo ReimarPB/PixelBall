@@ -54,6 +54,7 @@ void update(void)
 	switch (scene) {
 		case SCENE_GAME:       update_game();       break;
 		case SCENE_PAUSE:      update_pause();      break;
+		case SCENE_MAIN_MENU:  update_main_menu();  break;
 		case SCENE_TRANSITION: update_transition(); break;
 	}
 }

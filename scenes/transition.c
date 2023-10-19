@@ -63,14 +63,16 @@ void update_transition(void)
 		return;
 	}
 
+	// Update scene
+	scene = progress > 0 ? old_scene : new_scene;
+	update();
+	scene = SCENE_TRANSITION;
+
 	redraw();
 }
 
 void draw_transition(void)
 {
-	int scene_start  = progress > 0 ? TRANSITION_FULL_HEIGHT - progress : 0;
-	int scene_height = progress > 0 ? progress : -progress;
-
 	int black_start  = progress > 0 ? 0 : -progress;
 	int black_height = progress > 0 ? HEIGHT_PX - progress : TRANSITION_FULL_HEIGHT + progress;
 

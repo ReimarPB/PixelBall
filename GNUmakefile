@@ -16,7 +16,7 @@ OBJS=                             \
 	build/components/background.o \
 	build/levels/level.o          \
 	build/levels/test_level.o
-LIBS=-lX11 -lXpm -lXext -lXrender -lpthread
+LIBS=-lX11 -lXpm -lXext -lXrender -lpthread -lstartup-notification-1
 
 _ := $(shell mkdir -p build/native build/entities build/scenes build/ui build/utils build/components build/levels)
 

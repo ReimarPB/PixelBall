@@ -1,8 +1,11 @@
+#define SN_API_NOT_YET_FROZEN
+
 #include <X11/Xlib.h>
 #include <X11/xpm.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/Xdbe.h>
 #include <X11/extensions/Xrender.h>
+#include <libsn/sn.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -227,6 +230,11 @@ int main(int argc, char **argv)
 
 	window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, WIDTH_PX, HEIGHT_PX, 0, white, white);
 
+	// Initialize startup notification
+	SnDisplay *sn_display = sn_display_new(display, NULL, NULL);
+	SnLauncheeContext *sn_context = sn_launchee_context_new_from_environment(sn_display, DefaultScreen(display));
+	if (sn_context) sn_launchee_context_setup_window(sn_context, window);
+
 	// Xlib extensions
 
 	// Create back buffer for double buffering
@@ -288,6 +296,9 @@ int main(int argc, char **argv)
 	pthread_create(&game_thread, NULL, game_loop, NULL);
 
 	XkbSetDetectableAutoRepeat(display, true, false);
+
+	// Tell WM that the startup is completed
+	if (sn_context) sn_launchee_context_complete(sn_context);
 
 	XEvent event;
 	KeySym last_key = XK_VoidSymbol;

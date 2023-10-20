@@ -13,10 +13,11 @@ typedef bool (*collision_handler_t)(struct ball *ball, struct block block, int b
 struct block {
 	sprite_t *sprite;
 	struct color particle_color;
+	bool has_shadow;
 	collision_handler_t collision_handler;
 };
 
-extern struct block BLOCK_GRASS, BLOCK_DIRT;
+extern struct block BLOCK_GRASS, BLOCK_DIRT, BLOCK_SPIKE;
 
 void init_blocks(void);
 

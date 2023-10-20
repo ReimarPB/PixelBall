@@ -64,7 +64,7 @@ void draw_game(void)
 	// Draw block shadows
 	for (int y = 0; y < HEIGHT_BLOCKS; y++) {
 		for (int x = 0; x < WIDTH_BLOCKS; x++) {
-			if (level.blocks[y][x] == NULL) continue;
+			if (level.blocks[y][x] == NULL || !level.blocks[y][x]->has_shadow) continue;
 
 			draw_rect(
 				rgba(0, 0, 0, 0.3),

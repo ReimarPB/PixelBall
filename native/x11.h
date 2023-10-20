@@ -16,6 +16,9 @@
 #include "../assets/dirt.xpm"
 #define SPRITE_DIRT dirt_xpm
 
+#include "../assets/spike.xpm"
+#define SPRITE_SPIKE spike_xpm
+
 #include "../assets/font_5x7.xpm"
 #define SPRITE_FONT_5x7 font_5x7_xpm
 

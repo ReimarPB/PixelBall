@@ -4,7 +4,7 @@
 struct level parse_level(char *level_string)
 {
 	struct level result = { 0 };
-	
+
 	for (int y = 0; y < HEIGHT_BLOCKS; y++) {
 		int offset = y * (WIDTH_BLOCKS + 1);
 

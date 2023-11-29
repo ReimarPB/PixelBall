@@ -5,16 +5,18 @@
 
 #include "../native/common.h"
 #include "../globals.h"
+#include "ball.h"
 
 struct block;
 
-typedef bool (*collision_handler_t)(struct ball *ball, struct block block, int block_x, int block_y, enum axis axis);
+typedef void collision_handler_t(void);
 
 struct block {
 	sprite_t *sprite;
 	struct color particle_color;
 	bool has_shadow;
-	collision_handler_t collision_handler;
+	collision_handler_t *collision_handler;
+	struct rectangle *hitbox;
 };
 
 extern struct block BLOCK_GRASS, BLOCK_DIRT, BLOCK_SPIKE;

@@ -1,5 +1,8 @@
 #include <stdbool.h>
 
+#ifndef BALL_H
+#define BALL_H
+
 #define BALL_SIZE 16
 #define BALL_SPEED 0.2
 #define BALL_MAX_SPEED 2.0
@@ -20,4 +23,6 @@ void unload_ball(void);
 void update_ball(struct ball *ball);
 
 void draw_ball(struct ball ball);
+
+#endif
 

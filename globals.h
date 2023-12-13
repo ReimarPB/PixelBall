@@ -22,5 +22,12 @@ struct point {
 	int y;
 };
 
+struct rectangle {
+	int x;
+	int y;
+	int width;
+	int height;
+};
+
 #endif
 

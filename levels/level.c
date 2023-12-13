@@ -4,7 +4,7 @@
 struct level parse_level(char *level_string)
 {
 	struct level result = { 0 };
-	
+
 	for (int y = 0; y < HEIGHT_BLOCKS; y++) {
 		int offset = y * (WIDTH_BLOCKS + 1);
 
@@ -18,6 +18,12 @@ struct level parse_level(char *level_string)
 					break;
 				case 'D':
 					result.blocks[y][x] = &BLOCK_DIRT;
+					break;
+				case 'S':
+					result.blocks[y][x] = &BLOCK_SPIKE;
+					break;
+				case 's':
+					result.blocks[y][x] = &BLOCK_SMALL_SPIKES;
 					break;
 			}
 		}

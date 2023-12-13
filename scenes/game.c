@@ -1,5 +1,6 @@
 #include <stddef.h>
 #include <string.h>
+#include <stdlib.h>
 #include <math.h>
 
 #include "../entities/ball.h"
@@ -64,7 +65,7 @@ void draw_game(void)
 	// Draw block shadows
 	for (int y = 0; y < HEIGHT_BLOCKS; y++) {
 		for (int x = 0; x < WIDTH_BLOCKS; x++) {
-			if (level.blocks[y][x] == NULL) continue;
+			if (level.blocks[y][x] == NULL || !level.blocks[y][x]->has_shadow) continue;
 
 			draw_rect(
 				rgba(0, 0, 0, 0.3),
@@ -85,7 +86,33 @@ void draw_game(void)
 		}
 	}
 
+
+	// Draw hitboxes (debug)
+	if (getenv("PIXELBALL_DEBUG")) {
+		for (int y = 0; y < HEIGHT_BLOCKS; y++) {
+			for (int x = 0; x < WIDTH_BLOCKS; x++) {
+				struct block *block = level.blocks[y][x];
+
+				if (!block || !block->hitbox) continue;
+
+				draw_rect(
+					rgba(0, 0, 255, 0.3),
+					x * BLOCK_SIZE + block->hitbox->x,
+					y * BLOCK_SIZE + block->hitbox->y,
+					block->hitbox->width,
+					block->hitbox->height
+				);
+			}
+		}
+	}
+
 	draw_ball(ball);
+
+	// Draw ball hitbox (debug)
+	if (getenv("PIXELBALL_DEBUG")) {
+		draw_rect(rgba(0, 0, 255, 0.3), ball.x, ball.y, BALL_SIZE, BALL_SIZE);
+	}
+
 	draw_particles();
 }
 

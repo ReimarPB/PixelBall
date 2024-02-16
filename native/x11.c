@@ -234,6 +234,7 @@ int main(int argc, char **argv)
 	SnDisplay *sn_display = sn_display_new(display, NULL, NULL);
 	SnLauncheeContext *sn_context = sn_launchee_context_new_from_environment(sn_display, DefaultScreen(display));
 	if (sn_context) sn_launchee_context_setup_window(sn_context, window);
+	sn_display_unref(sn_display);
 
 	// Xlib extensions
 
@@ -291,7 +292,7 @@ int main(int argc, char **argv)
 	XMatchVisualInfo(display, DefaultScreen(display), 32, TrueColor, &vinfo);
 
 	XMapWindow(display, window);
-	
+
 	pthread_t game_thread;
 	pthread_create(&game_thread, NULL, game_loop, NULL);
 

@@ -13,60 +13,66 @@ struct particle {
 	float x_vel;
 	float y_vel;
 	float start_y;
-	struct particle *next;
+	int active;
 };
 
-struct particle *particle_head = NULL;
+static struct particle particles[MAX_PARTICLES];
 
 float random_float(float min, float max)
 {
 	return (max - min) * ((float)rand() / RAND_MAX) + min;
 }
 
+void init_particles(void)
+{
+	for (int i = 0; i < MAX_PARTICLES; i++) {
+		particles[i].active = 0;
+	}
+}
+
 void add_particle(struct color color, int x, int y, float min_x_vel, float max_x_vel, float min_y_vel, float max_y_vel)
 {
-	struct particle *particle = malloc(sizeof(struct particle));
-
-	*particle = (struct particle) {
-		.color = color,
-		.x = x,
-		.y = y,
-		.x_vel = random_float(min_x_vel, max_x_vel),
-		.y_vel = random_float(min_y_vel, max_y_vel),
-		.start_y = y,
-	};
-
-	particle->next = particle_head;
-	particle_head = particle;
+	for (int i = 0; i < MAX_PARTICLES; i++) {
+		if (!particles[i].active) {
+			particles[i] = (struct particle) {
+				.color = color,
+				.x = x,
+				.y = y,
+				.x_vel = random_float(min_x_vel, max_x_vel),
+				.y_vel = random_float(min_y_vel, max_y_vel),
+				.start_y = y,
+				.active = 1,
+			};
+			return;
+		}
+	}
 }
 
 void update_particles(void)
 {
-	for (struct particle *particle = particle_head, *prev = NULL; particle != NULL; particle = particle->next) {
-		redraw_area(particle->x, particle->y, PARTICLE_SIZE, PARTICLE_SIZE);
+	for (int i = 0; i < MAX_PARTICLES; i++) {
+		if (particles[i].active) {
+			particles[i].x += particles[i].x_vel;
+			particles[i].y += particles[i].y_vel;
+			particles[i].y_vel += 0.02;
 
-		particle->x += particle->x_vel;
-		particle->y += particle->y_vel;
-		particle->y_vel += 0.02;
-
-		// Delete particle when reaching below inital y coord
-		if (particle->y > particle->start_y) {
-			if (prev) prev->next = particle->next;
-			else particle_head = particle->next;
-			free(particle);
-			continue;
+			// Delete particle when reaching below initial y coord
+			if (particles[i].y > particles[i].start_y) {
+				particles[i].active = 0;
+				continue;
+			}
 		}
-
-		redraw_area(particle->x, particle->y, PARTICLE_SIZE, PARTICLE_SIZE);
-
-		prev = particle;
 	}
+
+	redraw_area(0, 0, WIDTH_PX, HEIGHT_PX);
 }
 
 void draw_particles(void)
 {
-	for (struct particle *particle = particle_head; particle != NULL; particle = particle->next) {
-		draw_rect(particle->color, particle->x, particle->y, PARTICLE_SIZE, PARTICLE_SIZE);
+	for (int i = 0; i < MAX_PARTICLES; i++) {
+		if (particles[i].active) {
+			draw_rect(particles[i].color, particles[i].x, particles[i].y, PARTICLE_SIZE, PARTICLE_SIZE);
+		}
 	}
 }
 

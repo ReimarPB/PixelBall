@@ -30,7 +30,7 @@ all: $(OBJS)
 	$(CC) -o pixelball $(OBJS) $(LIBS)
 
 debug: $(OBJS)
-	$(CC) -o pixelball -g -fsanitize=leak $(OBJS) $(LIBS)
+	$(CC) -o pixelball -g -pg -fsanitize=leak $(OBJS) $(LIBS)
 
 clean:
 	rm -r build

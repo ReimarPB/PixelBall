@@ -32,9 +32,17 @@ all: $(OBJS)
 debug: $(OBJS)
 	$(CC) -o pixelball -g -pg -fsanitize=leak $(OBJS) $(LIBS)
 
-install:
-	cp pixelball /usr/bin/pixelball
-
 clean:
 	rm -r build
+
+install:
+	cp pixelball /usr/bin/pixelball
+	chmod a+x /usr/bin/pixelball
+	xdg-icon-resource install --novendor --size 28 assets/ball.xpm pixelball
+	xdg-desktop-menu install --novendor pixelball.desktop
+
+uninstall:
+	rm /usr/bin/pixelball
+	xdg-icon-resource uninstall --size 28 pixelball
+	xdg-desktop-menu uninstall pixelball.desktop
 

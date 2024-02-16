@@ -25,6 +25,9 @@ struct level parse_level(char *level_string)
 				case 's':
 					result.blocks[y][x] = &BLOCK_SMALL_SPIKES;
 					break;
+				case 'R':
+					result.blocks[y][x] = &BLOCK_ROCK;
+					break;
 			}
 		}
 	}

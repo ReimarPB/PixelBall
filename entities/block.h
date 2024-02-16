@@ -19,7 +19,7 @@ struct block {
 	struct rectangle *hitbox;
 };
 
-extern struct block BLOCK_GRASS, BLOCK_DIRT, BLOCK_SPIKE, BLOCK_SMALL_SPIKES;
+extern struct block BLOCK_GRASS, BLOCK_DIRT, BLOCK_SPIKE, BLOCK_SMALL_SPIKES, BLOCK_ROCK;
 
 void init_blocks(void);
 

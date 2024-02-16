@@ -1,0 +1,13 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Pixel Ball
+Path=/usr/bin
+TryExec=pixelball
+Exec=pixelball
+Icon=pixelball
+Categories=Game;ArcadeGame;
+StartupNotify=true
+Terminal=false
+NoDisplay=false
+

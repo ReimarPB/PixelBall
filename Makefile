@@ -38,11 +38,15 @@ clean:
 install:
 	cp pixelball /usr/bin/pixelball
 	chmod a+x /usr/bin/pixelball
-	xdg-icon-resource install --novendor --size 28 assets/ball.xpm pixelball
+	xdg-icon-resource install --novendor --size 16 assets/icon-16.xpm pixelball
+	xdg-icon-resource install --novendor --size 32 assets/icon-32.xpm pixelball
+	xdg-icon-resource install --novendor --size 64 assets/icon-64.xpm pixelball
 	xdg-desktop-menu install --novendor pixelball.desktop
 
 uninstall:
 	rm /usr/bin/pixelball
-	xdg-icon-resource uninstall --size 28 pixelball
+	xdg-icon-resource uninstall --size 16 pixelball
+	xdg-icon-resource uninstall --size 32 pixelball
+	xdg-icon-resource uninstall --size 64 pixelball
 	xdg-desktop-menu uninstall pixelball.desktop
 

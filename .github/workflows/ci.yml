@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CPATH: /usr/include/startup-notification-1.0
     steps:
     - uses: actions/checkout@v3
     - name: install dependencies

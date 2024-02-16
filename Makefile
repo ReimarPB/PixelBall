@@ -18,12 +18,12 @@ OBJS=                             \
 	build/levels/test_level.o
 LIBS=-lX11 -lXpm -lXext -lXrender -lpthread -lstartup-notification-1
 
-_ := $(shell mkdir -p build/native build/entities build/scenes build/ui build/utils build/components build/levels)
-
 build/%.o: %.c $(wildcard *.h) $(wildcard *.xpm)
+	mkdir -p `dirname $@`
 	$(CC) -c -o $@ $< $(LIBS)
 
 build/%.o: %.pblv
+	mkdir -p `dirname $@`
 	objcopy --input binary --output elf64-x86-64 $< $@
 
 all: $(OBJS)
@@ -31,6 +31,9 @@ all: $(OBJS)
 
 debug: $(OBJS)
 	$(CC) -o pixelball -g -pg -fsanitize=leak $(OBJS) $(LIBS)
+
+install:
+	cp pixelball /usr/bin/pixelball
 
 clean:
 	rm -r build

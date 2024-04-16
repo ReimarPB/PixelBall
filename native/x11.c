@@ -1,3 +1,4 @@
+#include <X11/extensions/render.h>
 #define SN_API_NOT_YET_FROZEN
 
 #include <X11/Xlib.h>
@@ -76,22 +77,37 @@ void set_window_icon(sprite_t icon)
 	XSetWMHints(display, window, &hints);
 }
 
-sprite_t load_sprite(sprite_identifier_t sprite_xpm)
+sprite_t load_sprite(sprite_identifier_t sprite)
 {
 	int width, height;
-	sscanf(sprite_xpm[0], "%d %d ", &width, &height);
+	sscanf(sprite.xpm[0], "%d %d ", &width, &height);
 
 	XpmAttributes attributes;
 	attributes.valuemask = XpmReturnAllocPixels | XpmReturnExtensions;
 
 	Pixmap pixmap, shapemask = None;
-	XpmCreatePixmapFromData(display, window, sprite_xpm, &pixmap, &shapemask, &attributes);
+	XpmCreatePixmapFromData(display, window, sprite.xpm, &pixmap, &shapemask, &attributes);
 
 	Picture picture = None, shapemask_picture = None;
 	if (has_xrender) {
-		picture = XRenderCreatePicture(display, pixmap, default_format, 0, NULL);
+		XRenderPictureAttributes pict_attr;
+		int attributes = 0;
 
-		if (shapemask != None) shapemask_picture = XRenderCreatePicture(display, shapemask, XRenderFindStandardFormat(display, PictStandardA1), 0, NULL);
+		if (sprite.opacity < 1.0) {
+			XRenderColor opacity_color = color_to_xrendercolor(rgba(0, 0, 0, sprite.opacity));
+
+			Picture alpha_map = XRenderCreatePicture(display, pixmap, default_format, 0, NULL);
+			XRenderFillRectangle(display, PictOpOver, alpha_map, &opacity_color, 0, 0, width, height);
+
+			pict_attr.alpha_map = alpha_map;
+			attributes = CPAlphaMap;
+		}
+
+		picture = XRenderCreatePicture(display, pixmap, default_format, attributes, &pict_attr);
+
+		if (shapemask) {
+			shapemask_picture = XRenderCreatePicture(display, shapemask, XRenderFindStandardFormat(display, PictStandardA1), 0, NULL);
+		}
 	}
 
 	XpmFreeAttributes(&attributes);

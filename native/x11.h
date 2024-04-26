@@ -5,7 +5,7 @@
 #include <X11/extensions/Xrender.h>
 
 #include "../assets/icon-64.xpm"
-#define SPRITE_ICON icon_64_xpm
+#define SPRITE_ICON icon_64
 
 #include "../assets/ball.xpm"
 #define SPRITE_BALL ball_xpm

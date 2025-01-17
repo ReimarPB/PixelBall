@@ -206,7 +206,7 @@ struct point get_mouse_coords(void)
 		return (struct point) { -1, -1 };
 }
 
-void *game_loop(void)
+void *game_loop(void *arg)
 {
 	struct timespec frame_time = {
 		.tv_sec = 0,

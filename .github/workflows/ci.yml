@@ -14,7 +14,7 @@ jobs:
     - name: install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install libx11-dev libxpm-dev libstartup-notification0-dev
+        sudo apt-get install libx11-dev libxrender-dev libxpm-dev libstartup-notification0-dev
     - name: build
       run: make
 

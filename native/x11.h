@@ -5,40 +5,40 @@
 #include <X11/extensions/Xrender.h>
 
 #include "../assets/icon-64.xpm"
-#define SPRITE_ICON icon_64
+#define SPRITE_ICON (sprite_identifier_t) { .xpm = icon_64, .opacity = 1.0 }
 
 #include "../assets/ball.xpm"
-#define SPRITE_BALL ball_xpm
+#define SPRITE_BALL (sprite_identifier_t) { .xpm = ball_xpm, .opacity = 1.0 }
 
 #include "../assets/grass.xpm"
-#define SPRITE_GRASS grass_xpm
+#define SPRITE_GRASS (sprite_identifier_t) { .xpm = grass_xpm, .opacity = 1.0 }
 
 #include "../assets/dirt.xpm"
-#define SPRITE_DIRT dirt_xpm
+#define SPRITE_DIRT (sprite_identifier_t) { .xpm = dirt_xpm, .opacity = 1.0 }
 
 #include "../assets/spike.xpm"
-#define SPRITE_SPIKE spike_xpm
+#define SPRITE_SPIKE (sprite_identifier_t) { .xpm = spike_xpm, .opacity = 1.0 }
 
 #include "../assets/small_spikes.xpm"
-#define SPRITE_SMALL_SPIKES small_spikes_xpm
+#define SPRITE_SMALL_SPIKES (sprite_identifier_t) { .xpm = small_spikes_xpm, .opacity = 1.0 }
 
 #include "../assets/rock.xpm"
-#define SPRITE_ROCK rock_xpm
+#define SPRITE_ROCK (sprite_identifier_t) { .xpm = rock_xpm, .opacity = 1.0 }
 
 #include "../assets/font_5x7.xpm"
-#define SPRITE_FONT_5x7 font_5x7_xpm
+#define SPRITE_FONT_5x7 (sprite_identifier_t) { .xpm = font_5x7_xpm, .opacity = 1.0 }
 
 #include "../assets/font_5x7_x2.xpm"
-#define SPRITE_FONT_5x7_x2 font_5x7_x2_xpm
+#define SPRITE_FONT_5x7_x2 (sprite_identifier_t) { .xpm = font_5x7_x2_xpm, .opacity = 1.0 }
 
 #include "../assets/font_5x7_x4.xpm"
-#define SPRITE_FONT_5x7_x4 font_5x7_x4_xpm
+#define SPRITE_FONT_5x7_x4 (sprite_identifier_t) { .xpm = font_5x7_x4_xpm, .opacity = 1.0 }
 
 #include "../assets/logo.xpm"
-#define SPRITE_LOGO logo_xpm
+#define SPRITE_LOGO (sprite_identifier_t) { .xpm = logo_xpm, .opacity = 1.0 }
 
 #include "../assets/background.xpm"
-#define SPRITE_BACKGROUND background_xpm
+#define SPRITE_BACKGROUND (sprite_identifier_t) { .xpm = background_xpm, .opacity = 1.0 }
 
 typedef struct sprite {
 	Pixmap pixmap;
@@ -49,7 +49,10 @@ typedef struct sprite {
 	int height;
 } sprite_t;
 
-typedef char ** sprite_identifier_t;
+typedef struct sprite_identifier {
+	char **xpm;
+	float opacity;
+} sprite_identifier_t;
 
 #endif
 

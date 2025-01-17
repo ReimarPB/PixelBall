@@ -25,7 +25,6 @@ Window window;
 bool has_back_buffer = false;
 XdbeBackBuffer back_buffer;
 
-bool has_xrender = false;
 Picture root_picture;
 XRenderPictFormat *default_format;
 
@@ -43,7 +42,7 @@ int get_sprite_height(sprite_t sprite)
 
 unsigned long color_to_xcolor(struct color color)
 {
-	return (color.red << 16) + (color.green << 8) + color.blue;
+	return ((int)(color.alpha * 0xFF) << 24) + (color.red << 16) + (color.green << 8) + color.blue;
 }
 
 XRenderColor color_to_xrendercolor(struct color color)
@@ -59,6 +58,19 @@ XRenderColor color_to_xrendercolor(struct color color)
 struct color to_color(unsigned long color)
 {
 	return rgb((color & 0xFF0000) >> 16, (color & 0xFF00) >> 8, color & 0xFF);
+}
+
+Pixmap image_to_pixmap(XImage *image)
+{
+	Pixmap pixmap = XCreatePixmap(display, window, image->width, image->height, image->depth);
+
+	GC gc = XCreateGC(display, pixmap, 0, NULL);
+	XPutImage(display, pixmap, gc, image, 0, 0, 0, 0, image->width, image->height);
+
+	XFreeGC(display, gc);
+	XDestroyImage(image);
+
+	return pixmap;
 }
 
 void set_window_title(char *title)
@@ -79,43 +91,51 @@ void set_window_icon(sprite_t icon)
 
 sprite_t load_sprite(sprite_identifier_t sprite)
 {
-	int width, height;
-	sscanf(sprite.xpm[0], "%d %d ", &width, &height);
+	// Load image and shapemask
+	XpmAttributes attributes = {
+		.valuemask = XpmDepth,
+		.depth = 32, // Support transparency
+	};
 
-	XpmAttributes attributes;
-	attributes.valuemask = XpmReturnAllocPixels | XpmReturnExtensions;
-
-	Pixmap pixmap, shapemask = None;
-	XpmCreatePixmapFromData(display, window, sprite.xpm, &pixmap, &shapemask, &attributes);
-
-	Picture picture = None, shapemask_picture = None;
-	if (has_xrender) {
-		XRenderPictureAttributes pict_attr;
-		int attributes = 0;
-
-		if (sprite.opacity < 1.0) {
-			XRenderColor opacity_color = color_to_xrendercolor(rgba(0, 0, 0, sprite.opacity));
-
-			Picture alpha_map = XRenderCreatePicture(display, pixmap, default_format, 0, NULL);
-			XRenderFillRectangle(display, PictOpOver, alpha_map, &opacity_color, 0, 0, width, height);
-
-			pict_attr.alpha_map = alpha_map;
-			attributes = CPAlphaMap;
-		}
-
-		picture = XRenderCreatePicture(display, pixmap, default_format, attributes, &pict_attr);
-
-		if (shapemask) {
-			shapemask_picture = XRenderCreatePicture(display, shapemask, XRenderFindStandardFormat(display, PictStandardA1), 0, NULL);
-		}
-	}
+	XImage *image, *shapemask_image;
+	XpmCreateImageFromData(display, sprite.xpm, &image, &shapemask_image, &attributes);
 
 	XpmFreeAttributes(&attributes);
 
+	int width = image->width, height = image->height;
+
+	// Set transparency
+	for (int x = 0; x < width; x++) {
+		for (int y = 0; y < height; y++) {
+			//unsigned long pixel = XGetPixel(image, x, y);
+			//XPutPixel(image, x, y, (0xFF << 24) | pixel);
+
+			struct color color = to_color(XGetPixel(image, x, y));
+			color.alpha = sprite.opacity;
+			XPutPixel(image, x, y, color_to_xcolor(color));
+		}
+	}
+
+	// Convert to pixmaps
+	Pixmap pixmap, shapemask = None;
+
+	pixmap = image_to_pixmap(image);
+	if (shapemask_image) {
+		shapemask = image_to_pixmap(shapemask_image);
+	}
+
+	// Convert to Xrender pictures
+	Picture picture = None, shapemask_picture = None;
+
+	picture = XRenderCreatePicture(display, pixmap, default_format, 0, NULL);
+	if (shapemask) {
+		shapemask_picture = XRenderCreatePicture(display, shapemask, XRenderFindStandardFormat(display, PictStandardA1), 0, NULL);
+	}
+
 	return (sprite_t) {
 		.pixmap = pixmap,
-		.shapemask = shapemask,
 		.picture = picture,
+		.shapemask = shapemask,
 		.shapemask_picture = shapemask_picture,
 		.width = width,
 		.height = height
@@ -126,7 +146,8 @@ void unload_sprite(sprite_t sprite)
 {
 	XFreePixmap(display, sprite.pixmap);
 	if (sprite.shapemask) XFreePixmap(display, sprite.shapemask);
-	if (has_xrender) XRenderFreePicture(display, sprite.picture);
+
+	XRenderFreePicture(display, sprite.picture);
 	if (sprite.shapemask_picture) XRenderFreePicture(display, sprite.shapemask_picture);
 }
 
@@ -137,41 +158,19 @@ void draw_sprite(sprite_t sprite, int x, int y)
 
 void draw_partial_sprite(sprite_t sprite, int x, int y, int sprite_x, int sprite_y, int sprite_width, int sprite_height)
 {
-	if (has_xrender) {
-		XRenderComposite(
-			display, PictOpOver, sprite.picture, sprite.shapemask_picture, root_picture,
-			sprite_x, sprite_y, sprite_x, sprite_y,
-			x, y, sprite_width, sprite_height
-		);
-	} else {
-		XGCValues values;
-		values.clip_mask = sprite.shapemask;
-		values.clip_x_origin = x - sprite_x;
-		values.clip_y_origin = y - sprite_y;
-
-		GC gc = XCreateGC(display, window, GCClipMask | GCClipXOrigin | GCClipYOrigin, &values);
-
-		XCopyArea(display, sprite.pixmap, back_buffer, gc, sprite_x, sprite_y, sprite_width, sprite_height, x, y);
-
-		XFreeGC(display, gc);
-	}
+	XRenderComposite(
+		display, PictOpOver, sprite.picture, sprite.shapemask_picture, root_picture,
+		sprite_x, sprite_y, sprite_x, sprite_y,
+		x, y, sprite_width, sprite_height
+	);
 
 	has_drawn_to_screen = true;
 }
 
 void draw_rect(struct color color, int x, int y, int width, int height)
 {
-	if (has_xrender) {
-		XRenderColor xrendercolor = color_to_xrendercolor(color);
-		XRenderFillRectangle(display, PictOpOver, root_picture, &xrendercolor, x, y, width, height);
-	} else {
-		GC gc = XCreateGC(display, window, 0, NULL);
-
-		XSetForeground(display, gc, color_to_xcolor(color));
-		XFillRectangle(display, back_buffer, gc, x, y, width, height);
-
-		XFreeGC(display, gc);
-	}
+	XRenderColor xrendercolor = color_to_xrendercolor(color);
+	XRenderFillRectangle(display, PictOpOver, root_picture, &xrendercolor, x, y, width, height);
 
 	has_drawn_to_screen = true;
 }
@@ -244,7 +243,16 @@ int main(int argc, char **argv)
 	unsigned long white = WhitePixel(display, DefaultScreen(display));
 	unsigned long black = BlackPixel(display, DefaultScreen(display));
 
-	window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, WIDTH_PX, HEIGHT_PX, 0, white, white);
+	//window = XCreateSimpleWindow(display, DefaultRootWindow(display), 0, 0, WIDTH_PX, HEIGHT_PX, 0, white, white);
+    XVisualInfo vinfo;
+    XMatchVisualInfo(display, DefaultScreen(display), 32, TrueColor, &vinfo);
+
+    XSetWindowAttributes attr;
+    attr.colormap = XCreateColormap(display, DefaultRootWindow(display), vinfo.visual, AllocNone);
+    attr.border_pixel = 0;
+    attr.background_pixel = 0;
+
+    window = XCreateWindow(display, DefaultRootWindow(display), 0, 0, WIDTH_PX, HEIGHT_PX, 0, vinfo.depth, InputOutput, vinfo.visual, CWColormap | CWBorderPixel | CWBackPixel, &attr);
 
 	// Initialize startup notification
 	SnDisplay *sn_display = sn_display_new(display, NULL, NULL);
@@ -275,17 +283,20 @@ int main(int argc, char **argv)
 	}
 
 	int xrender_major_version, xrender_minor_version;
-	has_xrender = XRenderQueryVersion(display, &xrender_major_version, &xrender_minor_version);
+	bool has_xrender = XRenderQueryVersion(display, &xrender_major_version, &xrender_minor_version);
 
 	if (has_xrender) {
 		printf("Using Xrender version %d.%d\n", xrender_major_version, xrender_minor_version);
 
-		default_format = XRenderFindVisualFormat(display, DefaultVisual(display, 0));
-		root_picture = XRenderCreatePicture(display, back_buffer, default_format, 0, NULL);
-	} else puts("Xrender extension not available. Some visual effects might not show.");
+		// Use format that supports transparency
+		default_format = XRenderFindStandardFormat(display, PictStandardARGB32);
 
-	XWindowAttributes windowAttributes;
-	XGetWindowAttributes(display, window, &windowAttributes);
+		root_picture = XRenderCreatePicture(display, back_buffer, default_format, 0, NULL);
+	} else {
+		puts("Xrender extension is required to run this program.");
+
+		return 1;
+	}
 
 	init();
 
@@ -303,9 +314,6 @@ int main(int argc, char **argv)
 
 	Atom wm_delete_window = XInternAtom(display, "WM_DELETE_WINDOW", false);
 	XSetWMProtocols(display, window, &wm_delete_window, 1);
-
-	XVisualInfo vinfo;
-	XMatchVisualInfo(display, DefaultScreen(display), 32, TrueColor, &vinfo);
 
 	XMapWindow(display, window);
 

@@ -121,7 +121,7 @@ void update_ball(struct ball *ball)
 				ball->x < hitbox_x_end && ball->x + BALL_SIZE > hitbox_x_start &&
 				ball->y < hitbox_y_end && ball->y + BALL_SIZE > hitbox_y_start
 			) {
-				block->collision_handler();
+				block->collision_handler(x, y);
 			}
 		}
 	}

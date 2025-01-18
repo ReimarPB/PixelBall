@@ -146,12 +146,28 @@ void game_onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 void die(void)
 {
 	for (int i = 0; i < 10; i++) {
-		add_particle(rgb(255, 0, 0), ball.x + BALL_SIZE / 2, MIN(ball.y + BALL_SIZE / 2, HEIGHT_PX), -1.0,  1.0, -2.0, 2.0);
+		add_particle(rgb(255, 0, 0), ball.x + BALL_SIZE / 2, MIN(ball.y + BALL_SIZE / 2, HEIGHT_PX), -1.0, 1.0, -2.0, 2.0);
 	}
 
 	ball.x = level.start.x * BLOCK_SIZE;
 	ball.y = level.start.y * BLOCK_SIZE;
 	ball.x_vel = 0.0;
 	ball.y_vel = 0.1;
+
+	// Test level
+	LOAD_LEVEL(test_level);
+
+	level = parse_level(test_level);
+}
+
+void touch_bubble(int x, int y)
+{
+	for (int i = 0; i < 10; i++) {
+		add_particle(rgb(0, 235, 255), x * BLOCK_SIZE + BLOCK_SIZE / 2, (y + 1) * BLOCK_SIZE - BLOCK_SIZE / 2, -0.5, 0.5, -1.0, 1.0);
+	}
+
+	ball.y_vel = -3.6;
+
+	level.blocks[y][x] = NULL;
 }
 

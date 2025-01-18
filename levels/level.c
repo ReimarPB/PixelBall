@@ -28,6 +28,9 @@ struct level parse_level(char *level_string)
 				case 'R':
 					result.blocks[y][x] = &BLOCK_ROCK;
 					break;
+				case 'B':
+					result.blocks[y][x] = &BLOCK_BUBBLE;
+					break;
 			}
 		}
 	}

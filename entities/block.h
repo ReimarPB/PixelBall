@@ -9,7 +9,7 @@
 
 struct block;
 
-typedef void collision_handler_t(void);
+typedef void collision_handler_t(int x, int y);
 
 struct block {
 	sprite_t *sprite;
@@ -19,7 +19,7 @@ struct block {
 	struct rectangle *hitbox;
 };
 
-extern struct block BLOCK_GRASS, BLOCK_DIRT, BLOCK_SPIKE, BLOCK_SMALL_SPIKES, BLOCK_ROCK;
+extern struct block BLOCK_GRASS, BLOCK_DIRT, BLOCK_SPIKE, BLOCK_SMALL_SPIKES, BLOCK_ROCK, BLOCK_BUBBLE;
 
 void init_blocks(void);
 

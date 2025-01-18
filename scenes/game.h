@@ -17,3 +17,5 @@ void game_onkeyup(enum key key, bool ctrl, bool alt, bool shift);
 
 void die(void);
 
+void touch_bubble(int x, int y);
+

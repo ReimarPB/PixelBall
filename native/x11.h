@@ -5,7 +5,7 @@
 #include <X11/extensions/Xrender.h>
 
 #include "../assets/icon-64.xpm"
-#define SPRITE_ICON (sprite_identifier_t) { .xpm = icon_64, .opacity = 1.0 }
+#define SPRITE_ICON (sprite_identifier_t) { .xpm = icon_64_xpm, .opacity = 1.0 }
 
 #include "../assets/ball.xpm"
 #define SPRITE_BALL (sprite_identifier_t) { .xpm = ball_xpm, .opacity = 1.0 }
@@ -24,6 +24,9 @@
 
 #include "../assets/rock.xpm"
 #define SPRITE_ROCK (sprite_identifier_t) { .xpm = rock_xpm, .opacity = 1.0 }
+
+#include "../assets/bubble.xpm"
+#define SPRITE_BUBBLE (sprite_identifier_t) { .xpm = bubble_xpm, .opacity = 0.1 }
 
 #include "../assets/font_5x7.xpm"
 #define SPRITE_FONT_5x7 (sprite_identifier_t) { .xpm = font_5x7_xpm, .opacity = 1.0 }

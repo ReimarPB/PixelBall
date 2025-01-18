@@ -107,9 +107,6 @@ sprite_t load_sprite(sprite_identifier_t sprite)
 	// Set transparency
 	for (int x = 0; x < width; x++) {
 		for (int y = 0; y < height; y++) {
-			//unsigned long pixel = XGetPixel(image, x, y);
-			//XPutPixel(image, x, y, (0xFF << 24) | pixel);
-
 			struct color color = to_color(XGetPixel(image, x, y));
 			color.alpha = sprite.opacity;
 			XPutPixel(image, x, y, color_to_xcolor(color));

@@ -12,6 +12,8 @@
 #define HEIGHT_PX HEIGHT_BLOCKS * BLOCK_SIZE
 #define BLOCK_SHADOW_OFFSET 3
 
+static const double E = 2.718281828459045;
+
 enum axis {
 	X_AXIS,
 	Y_AXIS,

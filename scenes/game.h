@@ -5,6 +5,8 @@
 
 extern struct level level;
 
+extern int ticks;
+
 void init_game(void);
 
 void update_game(void);

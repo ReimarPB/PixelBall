@@ -16,18 +16,18 @@ OBJS=                             \
 	build/components/background.o \
 	build/levels/level.o          \
 	build/levels/test_level.o
-LIBS=-lX11 -lXpm -lXext -lXrender -lpthread -lstartup-notification-1
+LIBS=-lm -lX11 -lXpm -lXext -lXrender -lpthread -lstartup-notification-1
 
 build/%.o: %.c $(wildcard *.h) $(wildcard *.xpm)
 	mkdir -p `dirname $@`
-	$(CC) -c -o $@ $< $(LIBS)
+	$(CC) $(CFLAGS) -c -o $@ $< $(LIBS)
 
 build/%.o: %.pblv
 	mkdir -p `dirname $@`
 	objcopy --input binary --output elf64-x86-64 $< $@
 
 all: $(OBJS)
-	$(CC) -o pixelball $(OBJS) $(LIBS)
+	$(CC) $(CFLAGS) -o pixelball $(OBJS) $(LIBS)
 
 debug: $(OBJS)
 	$(CC) -o pixelball -g -pg -fsanitize=leak $(OBJS) $(LIBS)

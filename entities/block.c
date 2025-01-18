@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "ball.h"
 #include "block.h"
 #include "particle.h"
@@ -17,6 +19,14 @@ void die_collision_handler(int x, int y)
 	die();
 }
 
+void draw_bubble(int x, int y)
+{
+	// Make bubble animation effect
+	double y_offset = 5 * (1 / (1 + pow(E, -2 * sin(ticks / 15.0)))) - 2;
+
+	draw_sprite(sprite_bubble, x * BLOCK_SIZE, y * BLOCK_SIZE + y_offset);
+}
+
 void init_blocks(void)
 {
 	sprite_grass = load_sprite(SPRITE_GRASS);
@@ -32,6 +42,7 @@ void init_blocks(void)
 		.has_shadow = true,
 		.collision_handler = NULL,
 		.hitbox = NULL,
+		.draw_function = NULL,
 	};
 
 	BLOCK_DIRT = (struct block) {
@@ -40,6 +51,7 @@ void init_blocks(void)
 		.has_shadow = true,
 		.collision_handler = NULL,
 		.hitbox = NULL,
+		.draw_function = NULL,
 	};
 
 	BLOCK_SPIKE = (struct block) {
@@ -48,6 +60,7 @@ void init_blocks(void)
 		.has_shadow = false,
 		.collision_handler = &die_collision_handler,
 		.hitbox = &spike_hitbox,
+		.draw_function = NULL,
 	};
 
 	BLOCK_SMALL_SPIKES = (struct block) {
@@ -56,6 +69,7 @@ void init_blocks(void)
 		.has_shadow = false,
 		.collision_handler = &die_collision_handler,
 		.hitbox = &small_spikes_hitbox,
+		.draw_function = NULL,
 	};
 
 	BLOCK_ROCK = (struct block) {
@@ -64,6 +78,7 @@ void init_blocks(void)
 		.has_shadow =  true,
 		.collision_handler = NULL,
 		.hitbox = NULL,
+		.draw_function = NULL,
 	};
 
 	BLOCK_BUBBLE = (struct block) {
@@ -72,6 +87,7 @@ void init_blocks(void)
 		.has_shadow = false,
 		.collision_handler = &touch_bubble,
 		.hitbox = &bubble_hitbox,
+		.draw_function = &draw_bubble,
 	};
 }
 

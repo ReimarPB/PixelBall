@@ -1,4 +1,3 @@
-#include <X11/extensions/render.h>
 #define SN_API_NOT_YET_FROZEN
 
 #include <X11/Xlib.h>

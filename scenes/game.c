@@ -1,7 +1,6 @@
 #include <stddef.h>
 #include <string.h>
 #include <stdlib.h>
-#include <math.h>
 
 #include "../entities/ball.h"
 #include "../entities/block.h"
@@ -16,6 +15,8 @@
 static struct ball ball = { 0 };
 struct level level;
 sprite_t sprite_background;
+
+int ticks;
 
 int keep_in_width_range(float x)
 {
@@ -47,6 +48,8 @@ void init_game(void)
 		.x_vel = 0.0,
 		.y_vel = 0.1
 	};
+
+	ticks = 0;
 }
 
 void update_game(void)
@@ -56,6 +59,8 @@ void update_game(void)
 	redraw_area(keep_in_width_range(old_ball.x), keep_in_height_range(old_ball.y), BALL_SIZE, BALL_SIZE);
 	redraw_area(keep_in_width_range(ball.x),     keep_in_height_range(ball.y),     BALL_SIZE, BALL_SIZE);
 	update_particles();
+
+	ticks++;
 }
 
 void draw_game(void)
@@ -82,7 +87,10 @@ void draw_game(void)
 		for (int x = 0; x < WIDTH_BLOCKS; x++) {
 			if (level.blocks[y][x] == NULL) continue;
 
-			draw_sprite(*level.blocks[y][x]->sprite, x * BLOCK_SIZE, y * BLOCK_SIZE);
+			if (level.blocks[y][x]->draw_function)
+				level.blocks[y][x]->draw_function(x, y);
+			else
+				draw_sprite(*level.blocks[y][x]->sprite, x * BLOCK_SIZE, y * BLOCK_SIZE);
 		}
 	}
 

@@ -1,5 +1,7 @@
 #include <stdbool.h>
 
+#include "../globals.h"
+
 #ifndef BALL_H
 #define BALL_H
 
@@ -20,7 +22,7 @@ void init_ball(void);
 
 void unload_ball(void);
 
-void update_ball(struct ball *ball);
+void update_ball(struct ball *ball, void *block_states[HEIGHT_PX][WIDTH_PX]);
 
 void draw_ball(struct ball ball);
 

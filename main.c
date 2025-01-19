@@ -24,8 +24,8 @@ void init(void)
 {
 	srand(time(0));
 
-	init_game();
 	init_blocks();
+	init_game();
 	init_ball();
 	init_fonts();
 	init_buttons();

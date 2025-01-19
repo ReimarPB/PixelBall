@@ -51,7 +51,7 @@ void unload_ball(void)
 	unload_sprite(sprite_ball);
 }
 
-void update_ball(struct ball *ball)
+void update_ball(struct ball *ball, void *block_states[HEIGHT_PX][WIDTH_PX])
 {
 	int old_x = ball->x, old_y = ball->y;
 
@@ -121,7 +121,7 @@ void update_ball(struct ball *ball)
 				ball->x < hitbox_x_end && ball->x + BALL_SIZE > hitbox_x_start &&
 				ball->y < hitbox_y_end && ball->y + BALL_SIZE > hitbox_y_start
 			) {
-				block->collision_handler(x, y);
+				block->collision_handler(x, y, block_states[y][x], ball);
 			}
 		}
 	}

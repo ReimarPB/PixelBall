@@ -28,6 +28,12 @@
 #include "../assets/bubble.xpm"
 #define SPRITE_BUBBLE (sprite_identifier_t) { .xpm = bubble_xpm, .opacity = 0.1 }
 
+#include "../assets/jump_pad_base.xpm"
+#define SPRITE_JUMP_PAD_BASE (sprite_identifier_t) { .xpm = jump_pad_base_xpm, .opacity = 1.0 }
+
+#include "../assets/jump_pad_platform.xpm"
+#define SPRITE_JUMP_PAD_PLATFORM (sprite_identifier_t) { .xpm = jump_pad_platform_xpm, .opacity = 1.0 }
+
 #include "../assets/font_5x7.xpm"
 #define SPRITE_FONT_5x7 (sprite_identifier_t) { .xpm = font_5x7_xpm, .opacity = 1.0 }
 

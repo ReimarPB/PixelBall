@@ -14,6 +14,7 @@
 
 static struct ball ball = { 0 };
 struct level level;
+void *block_states[HEIGHT_PX][WIDTH_PX] = { 0 };
 sprite_t sprite_background;
 
 int ticks;
@@ -32,6 +33,20 @@ int keep_in_height_range(float x)
 	return x;
 }
 
+void reset_block_states()
+{
+	for (int y = 0; y < HEIGHT_BLOCKS; y++) {
+		for (int x = 0; x < WIDTH_BLOCKS; x++) {
+			if (!level.blocks[y][x] || level.blocks[y][x]->default_state_size == 0) continue;
+
+			if (block_states[y][x]) free(block_states[y][x]);
+
+			block_states[y][x] = malloc(level.blocks[y][x]->default_state_size);
+			memcpy(block_states[y][x], level.blocks[y][x]->default_state, level.blocks[y][x]->default_state_size);
+		}
+	}
+}
+
 void init_game(void)
 {
 	// TODO unload
@@ -41,6 +56,7 @@ void init_game(void)
 	LOAD_LEVEL(test_level);
 
 	level = parse_level(test_level);
+	reset_block_states();
 
 	ball = (struct ball) {
 		.x = level.start.x * BLOCK_SIZE,
@@ -55,7 +71,7 @@ void init_game(void)
 void update_game(void)
 {
 	struct ball old_ball = ball;
-	update_ball(&ball);
+	update_ball(&ball, block_states);
 	redraw_area(keep_in_width_range(old_ball.x), keep_in_height_range(old_ball.y), BALL_SIZE, BALL_SIZE);
 	redraw_area(keep_in_width_range(ball.x),     keep_in_height_range(ball.y),     BALL_SIZE, BALL_SIZE);
 	update_particles();
@@ -88,7 +104,7 @@ void draw_game(void)
 			if (level.blocks[y][x] == NULL) continue;
 
 			if (level.blocks[y][x]->draw_function)
-				level.blocks[y][x]->draw_function(x, y);
+				level.blocks[y][x]->draw_function(x, y, block_states[y][x]);
 			else
 				draw_sprite(*level.blocks[y][x]->sprite, x * BLOCK_SIZE, y * BLOCK_SIZE);
 		}
@@ -162,20 +178,6 @@ void die(void)
 	ball.x_vel = 0.0;
 	ball.y_vel = 0.1;
 
-	// Test level
-	LOAD_LEVEL(test_level);
-
-	level = parse_level(test_level);
-}
-
-void touch_bubble(int x, int y)
-{
-	for (int i = 0; i < 10; i++) {
-		add_particle(rgb(0, 235, 255), x * BLOCK_SIZE + BLOCK_SIZE / 2, (y + 1) * BLOCK_SIZE - BLOCK_SIZE / 2, -0.5, 0.5, -1.0, 1.0);
-	}
-
-	ball.y_vel = -3.6;
-
-	level.blocks[y][x] = NULL;
+	reset_block_states();
 }
 

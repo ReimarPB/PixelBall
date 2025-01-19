@@ -31,6 +31,9 @@ struct level parse_level(char *level_string)
 				case 'B':
 					result.blocks[y][x] = &BLOCK_BUBBLE;
 					break;
+				case 'J':
+					result.blocks[y][x] = &BLOCK_JUMP_PAD;
+					break;
 			}
 		}
 	}

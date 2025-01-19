@@ -54,7 +54,10 @@ void draw_text(char *text, struct font *font, struct position position)
 	int y = get_y_from_position(position, font->char_height);
 
 	for (int i = 0; i < strlen(text); i++) {
-		int index = strchr(FONT_STRING, text[i]) - FONT_STRING; // TODO validate
+		int index = strchr(FONT_STRING, text[i]) - FONT_STRING;
+
+		if (index < 0 || index >= strlen(FONT_STRING))
+			continue;
 
 		draw_partial_sprite(
 			font->sprite,

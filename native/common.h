@@ -3,9 +3,13 @@
 
 #include <stdint.h>
 
-// TODO check platform
-#include "x11.h"
 #include "../globals.h"
+
+#ifdef _WIN32
+#	include "win32.h"
+#else
+#	include "x11.h"
+#endif
 
 #define NO_COLOR (struct color) { .red = 0, .green = 0, .blue = 0, .alpha = 0.0 }
 

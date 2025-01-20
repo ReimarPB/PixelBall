@@ -12,7 +12,6 @@
 #include "entities/particle.h"
 #include "entities/block.h"
 #include "entities/ball.h"
-#include "native/x11.h"
 #include "native/common.h"
 #include "ui/text.h"
 #include "ui/button.h"

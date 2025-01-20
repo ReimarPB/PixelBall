@@ -1,0 +1,31 @@
+OBJS=                               \
+	build/main.obj                  \
+	build/native/win32.obj          \
+	build/native/common.obj         \
+	build/entities/ball.obj         \
+	build/entities/block.obj        \
+	build/entities/particle.obj     \
+	build/scenes/scene.obj          \
+	build/scenes/game.obj           \
+	build/scenes/pause.obj          \
+	build/scenes/main_menu.obj      \
+	build/scenes/transition.obj     \
+	build/ui/text.obj               \
+	build/ui/button.obj             \
+	build/utils/position.obj        \
+	build/components/background.obj \
+	build/levels/level.obj          \
+	build/levels/test_level.obj
+
+all: pixelball.exe
+
+{.}.c{build}.obj:
+	mkdir $(*D) & echo.
+	$(CC) $(CDEBUG) $(CFLAGS) $(CVARS) /nologo /Fo:$@ /c $** 
+
+pixelball.exe: $(OBJS)
+	link $(LDEBUG) $(CONFLAGS) /out:pixelball.exe $(OBJS) $(CONLIBS)
+	rc resources.rc
+
+$(OBJS):
+

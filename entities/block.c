@@ -82,6 +82,7 @@ void jump_pad_collide(int x, int y, void *block_state, struct ball *ball)
 	}
 
 	if (ball->y_vel > 0) {
+		ball->y_vel = 2.5;
 		*pushed_y = MIN(15, *pushed_y + ball->y_vel);
 	}
 

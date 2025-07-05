@@ -17,24 +17,27 @@
 #include "ui/text.h"
 #include "ui/button.h"
 
-enum scene scene = SCENE_GAME;
+enum scene scene;
 sprite_t sprite_icon;
 
 void init(void)
 {
 	srand(time(0));
 
+	init_buttons();
 	init_blocks();
+	init_main_menu();
 	init_game();
 	init_ball();
 	init_fonts();
-	init_buttons();
 
 	set_window_title("Pixel Ball");
 
 	sprite_icon = load_sprite(SPRITE_ICON);
 
 	set_window_icon(sprite_icon);
+
+	change_scene(SCENE_MAIN_MENU);
 }
 
 void draw(void)

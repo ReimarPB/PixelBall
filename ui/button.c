@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #include "../globals.h"
 #include "../scenes/scene.h"

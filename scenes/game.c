@@ -51,11 +51,11 @@ void init_game(void)
 {
 	// TODO unload
 	sprite_background = load_sprite(SPRITE_BACKGROUND);
+}
 
-	// Test level
-	LOAD_LEVEL(test_level);
-
-	level = parse_level(test_level);
+void start_game(const char *lvl)
+{
+	level = parse_level(lvl);
 	reset_block_states();
 
 	ball = (struct ball) {

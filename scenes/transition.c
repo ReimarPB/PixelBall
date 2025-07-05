@@ -48,7 +48,7 @@ void update_transition(void)
 
 	if (progress == 0) {
 		clear_buttons();
-		init_scene(new_scene);
+		load_scene(new_scene);
 		generate_offsets();
 	}
 

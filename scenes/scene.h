@@ -12,7 +12,7 @@ extern enum scene scene;
 
 void change_scene(enum scene scene);
 
-void init_scene(enum scene scene);
+void load_scene(enum scene scene);
 
 #endif
 

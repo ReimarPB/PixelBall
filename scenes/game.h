@@ -9,6 +9,8 @@ extern int ticks;
 
 void init_game(void);
 
+void start_game(const char *level);
+
 void update_game(void);
 
 void draw_game(void);

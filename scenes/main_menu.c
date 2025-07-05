@@ -5,6 +5,8 @@
 #include "../native/common.h"
 #include "../ui/button.h"
 #include "../entities/block.h"
+#include "../scenes/game.h"
+#include "../levels/level.h"
 #include "transition.h"
 
 #define INITIAL_BACKGROUND_HEIGHT 4
@@ -15,8 +17,11 @@ static sprite_t sprite_logo, sprite_background;
 int background_heights[WIDTH_BLOCKS + 1];
 int background_offset = 0;
 
+LOAD_LEVEL(test_level);
+
 void play(void)
 {
+	start_game(test_level);
 	transition_to_scene(SCENE_GAME);
 }
 
@@ -44,7 +49,10 @@ void init_main_menu(void)
 	// TODO unlaod
 	sprite_logo = load_sprite(SPRITE_LOGO);
 	sprite_background = load_sprite(SPRITE_BACKGROUND);
+}
 
+void load_main_menu()
+{
 	// Generate block heights for background
 	int height = INITIAL_BACKGROUND_HEIGHT;
 	for (int i = 0; i <= WIDTH_BLOCKS; i++) {

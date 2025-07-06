@@ -1,6 +1,8 @@
 #include "../native/common.h"
 
-void init_particles();
+void clear_particles(void);
+
+void init_particles(void);
 
 void add_particle(struct color color, int x, int y, float min_x_vel, float max_x_vel, float min_y_vel, float max_y_vel);
 

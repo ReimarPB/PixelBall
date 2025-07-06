@@ -23,11 +23,16 @@ float random_float(float min, float max)
 	return (max - min) * ((float)rand() / RAND_MAX) + min;
 }
 
-void init_particles(void)
+void clear_particles(void)
 {
 	for (int i = 0; i < MAX_PARTICLES; i++) {
 		particles[i].active = 0;
 	}
+}
+
+void init_particles(void)
+{
+	clear_particles();
 }
 
 void add_particle(struct color color, int x, int y, float min_x_vel, float max_x_vel, float min_y_vel, float max_y_vel)

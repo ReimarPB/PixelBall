@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#include "../entities/particle.h"
 #include "../native/common.h"
 #include "../ui/button.h"
 #include "../globals.h"
@@ -48,6 +49,7 @@ void update_transition(void)
 
 	if (progress == 0) {
 		clear_buttons();
+		clear_particles();
 		load_scene(new_scene);
 		generate_offsets();
 	}

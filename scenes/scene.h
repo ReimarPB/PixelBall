@@ -6,6 +6,7 @@ enum scene {
 	SCENE_PAUSE,
 	SCENE_MAIN_MENU,
 	SCENE_TRANSITION,
+	SCENE_LEVEL_SELECT,
 };
 
 extern enum scene scene;

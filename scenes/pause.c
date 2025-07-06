@@ -1,4 +1,5 @@
 #include <stdbool.h>
+
 #include "../globals.h"
 #include "../native/common.h"
 #include "../ui/text.h"
@@ -18,7 +19,7 @@ void unpause(void)
 
 void go_to_menu(void)
 {
-	transition_to_scene(SCENE_MAIN_MENU);
+	transition_to_scene(SCENE_LEVEL_SELECT);
 }
 
 static struct button pause_buttons[] = {

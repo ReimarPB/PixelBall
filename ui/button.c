@@ -19,6 +19,8 @@ int get_button_width(enum button_type type)
 {
 	switch (type) {
 		case BUTTON_TYPE_STANDARD: return 200;
+		case BUTTON_TYPE_SMALL:    return 70;
+		case BUTTON_TYPE_SQUARE:   return 60;
 	}
 }
 
@@ -26,6 +28,8 @@ int get_button_height(enum button_type type)
 {
 	switch (type) {
 		case BUTTON_TYPE_STANDARD: return 45;
+		case BUTTON_TYPE_SMALL:    return 30;
+		case BUTTON_TYPE_SQUARE:   return 60;
 	}
 }
 

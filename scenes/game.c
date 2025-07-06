@@ -14,8 +14,8 @@
 
 static struct ball ball = { 0 };
 struct level level;
-void *block_states[HEIGHT_PX][WIDTH_PX] = { 0 };
-sprite_t sprite_background;
+static void *block_states[HEIGHT_PX][WIDTH_PX] = { 0 };
+static sprite_t sprite_background;
 
 int ticks;
 

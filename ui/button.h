@@ -7,6 +7,8 @@
 
 enum button_type {
 	BUTTON_TYPE_STANDARD,
+	BUTTON_TYPE_SMALL,
+	BUTTON_TYPE_SQUARE,
 };
 
 struct button {

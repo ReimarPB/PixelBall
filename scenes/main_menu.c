@@ -17,12 +17,9 @@ static sprite_t sprite_logo, sprite_background;
 int background_heights[WIDTH_BLOCKS + 1];
 int background_offset = 0;
 
-LOAD_LEVEL(test_level);
-
 void play(void)
 {
-	start_game(test_level);
-	transition_to_scene(SCENE_GAME);
+	transition_to_scene(SCENE_LEVEL_SELECT);
 }
 
 static struct button play_button = {

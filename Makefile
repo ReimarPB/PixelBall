@@ -8,6 +8,7 @@ OBJS=                             \
 	build/scenes/scene.o          \
 	build/scenes/game.o           \
 	build/scenes/pause.o          \
+	build/scenes/level_select.o   \
 	build/scenes/main_menu.o      \
 	build/scenes/transition.o     \
 	build/ui/text.o               \

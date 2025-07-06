@@ -104,8 +104,10 @@ void unload(void)
 {
 	unload_sprite(sprite_icon);
 	unload_blocks();
+	unload_level_select();
+	unload_main_menu();
+	unload_game();
 	unload_ball();
 	unload_fonts();
-	unload_level_select();
 }
 

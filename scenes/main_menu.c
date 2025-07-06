@@ -43,7 +43,6 @@ int generate_background_height(int height)
 
 void init_main_menu(void)
 {
-	// TODO unlaod
 	sprite_logo = load_sprite(SPRITE_LOGO);
 	sprite_background = load_sprite(SPRITE_BACKGROUND);
 }
@@ -108,5 +107,11 @@ void draw_main_menu(void)
 	}
 
 	draw_sprite(sprite_logo, WIDTH_PX / 2 - get_sprite_width(sprite_logo) / 2, 50);
+}
+
+void unload_main_menu(void)
+{
+	unload_sprite(sprite_logo);
+	unload_sprite(sprite_background);
 }
 

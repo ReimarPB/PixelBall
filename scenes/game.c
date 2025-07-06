@@ -49,7 +49,6 @@ void reset_block_states()
 
 void init_game(void)
 {
-	// TODO unload
 	sprite_background = load_sprite(SPRITE_BACKGROUND);
 }
 
@@ -165,6 +164,11 @@ void game_onkeyup(enum key key, bool ctrl, bool alt, bool shift)
 			ball.going_right = false;
 			break;
 	}
+}
+
+void unload_game(void)
+{
+	unload_sprite(sprite_background);
 }
 
 void die(void)

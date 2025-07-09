@@ -30,6 +30,7 @@ static struct button back_button = {
 	.position = POS(45, 25, H_ALIGN_CENTER, V_ALIGN_MIDDLE),
 	.callback = back,
 	.type = BUTTON_TYPE_SMALL,
+	.disabled = false,
 };
 
 void play_level(void)
@@ -61,6 +62,7 @@ void load_level_select(void)
 			),
 			.callback = &play_level,
 			.type = BUTTON_TYPE_SQUARE,
+			.disabled = i != 0,
 		};
 
 		add_button(level_buttons[i]);

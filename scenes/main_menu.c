@@ -27,6 +27,7 @@ static struct button play_button = {
 	.position = POS(WIDTH_PX / 2, 250, H_ALIGN_CENTER, V_ALIGN_TOP),
 	.callback = play,
 	.type = BUTTON_TYPE_STANDARD,
+	.disabled = false,
 };
 
 int generate_background_height(int height)

@@ -28,12 +28,14 @@ static struct button pause_buttons[] = {
 		.position = POS(WIDTH_PX / 2, 150, H_ALIGN_CENTER, V_ALIGN_TOP),
 		.callback = unpause,
 		.type = BUTTON_TYPE_STANDARD,
+		.disabled = false,
 	},
 	(struct button) {
 		.text = "MAIN MENU",
 		.position = POS(WIDTH_PX / 2, 220, H_ALIGN_CENTER, V_ALIGN_TOP),
 		.callback = go_to_menu,
 		.type = BUTTON_TYPE_STANDARD,
+		.disabled = false,
 	},
 };
 

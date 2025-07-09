@@ -46,11 +46,13 @@ bool button_collides_with(struct button button, int x, int y)
 		y >= btn_y && y <= btn_y + height;
 }
 
-// Returns the index or -1
+// Returns the index or -1 - ignores disabled buttons
 int get_button_from_coords(int x, int y)
 {
 	for (int i = 0; i < button_amount; i++) {
 		struct button button = buttons[i];
+
+		if (button.disabled) continue;
 
 		if (button_collides_with(button, x, y)) return i;
 	}
@@ -84,12 +86,15 @@ void draw_buttons(void)
 		int btn_y = get_y_from_position(button.position, btn_height);
 		int y_offset = focused_button == i && button_pressed ? BUTTON_SHADOW_SIZE : 0;
 
+		struct color color = button.disabled ? rgb(150, 150, 150) : rgb(255, 0, 0);
+		struct color shadow_color = button.disabled ? rgb(120, 120, 120) : rgb(180, 0, 0);
+
 		// Draw button
 		if (focused_button == i && button_pressed) {
-			draw_rect(rgb(255, 0, 0), btn_x, y_offset + btn_y, btn_width, btn_height);
+			draw_rect(color, btn_x, y_offset + btn_y, btn_width, btn_height);
 		} else {
-			draw_rect(rgb(255, 0, 0), btn_x, btn_y, btn_width, btn_height);
-			draw_rect(rgb(180, 0, 0), btn_x, btn_y + btn_height, btn_width, BUTTON_SHADOW_SIZE);
+			draw_rect(color, btn_x, btn_y, btn_width, btn_height);
+			draw_rect(shadow_color, btn_x, btn_y + btn_height, btn_width, BUTTON_SHADOW_SIZE);
 		}
 
 		// Draw border

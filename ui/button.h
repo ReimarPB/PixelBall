@@ -16,6 +16,7 @@ struct button {
 	struct position position;
 	void (*callback)(void);
 	enum button_type type;
+	bool disabled;
 };
 
 extern struct button buttons[MAX_BUTTON_AMOUNT];

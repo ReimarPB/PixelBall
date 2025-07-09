@@ -19,7 +19,7 @@
 #include "ui/button.h"
 
 enum scene scene;
-sprite_t sprite_icon;
+icon_t icon;
 
 void init(void)
 {
@@ -35,9 +35,8 @@ void init(void)
 
 	set_window_title("Pixel Ball");
 
-	sprite_icon = load_sprite(SPRITE_ICON);
-
-	set_window_icon(sprite_icon);
+	icon = load_icon(SPRITE_ICON);
+	set_window_icon(icon);
 
 	change_scene(SCENE_MAIN_MENU);
 }
@@ -102,7 +101,7 @@ void onmouseup(int btn, int x, int y)
 
 void unload(void)
 {
-	unload_sprite(sprite_icon);
+	unload_icon(icon);
 	unload_blocks();
 	unload_level_select();
 	unload_main_menu();

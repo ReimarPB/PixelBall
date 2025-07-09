@@ -63,5 +63,10 @@ typedef struct sprite_identifier {
 	float opacity;
 } sprite_identifier_t;
 
+typedef struct icon {
+	Pixmap pixmap;
+	Pixmap shapemask;
+} icon_t;
+
 #endif
 

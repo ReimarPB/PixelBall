@@ -38,11 +38,15 @@ void apply_brightness(struct color *color, float brightness);
 
 void set_window_title(char *title);
 
-void set_window_icon(sprite_t icon);
+void set_window_icon(icon_t icon);
 
 int get_sprite_width(sprite_t sprite);
 
 int get_sprite_height(sprite_t sprite);
+
+icon_t load_icon(sprite_identifier_t icon);
+
+void unload_icon(icon_t icon);
 
 sprite_t load_sprite(sprite_identifier_t sprite);
 

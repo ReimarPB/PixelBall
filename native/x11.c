@@ -77,7 +77,7 @@ void set_window_title(char *title)
 	XStoreName(display, window, title);
 }
 
-void set_window_icon(sprite_t icon)
+void set_window_icon(icon_t icon)
 {
 	XWMHints hints = {
 		.flags = IconPixmapHint | IconMaskHint,
@@ -86,6 +86,24 @@ void set_window_icon(sprite_t icon)
 	};
 
 	XSetWMHints(display, window, &hints);
+
+}
+
+icon_t load_icon(sprite_identifier_t icon)
+{
+	Pixmap pixmap, shapemask;
+	XpmCreatePixmapFromData(display, window, icon.xpm, &pixmap, &shapemask, NULL);
+	
+	return (icon_t) {
+		.pixmap = pixmap,
+		.shapemask = shapemask,
+	};
+}
+
+void unload_icon(icon_t icon)
+{
+	XFreePixmap(display, icon.pixmap);
+	XFreePixmap(display, icon.shapemask);
 }
 
 sprite_t load_sprite(sprite_identifier_t sprite)
